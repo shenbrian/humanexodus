@@ -227,6 +227,10 @@
       <label>Tech Stack</label>
       <input type="text" id="stack" placeholder="e.g. Java, Spring, AWS">
     </div>
+    <div class="field">
+      <label>Email <span style="color:var(--muted);font-size:9px;letter-spacing:0.1em">(optional — get a follow-up in 30 days)</span></label>
+      <input type="email" id="email" placeholder="you@example.com" autocomplete="off">
+    </div>
     <button class="btn" id="analyze-btn" onclick="analyze()">Analyse my position</button>
     <div class="error-msg" id="error-msg">Please fill in all fields before analysing.</div>
   </div>
@@ -393,6 +397,7 @@ function generateSessionId() {
 
 async function analyze() {
   const role = document.getElementById('role').value.trim();
+  const email = document.getElementById('email').value.trim();
   const experience = document.getElementById('experience').value.trim();
   const stack = document.getElementById('stack').value.trim();
   const errorEl = document.getElementById('error-msg');
@@ -443,7 +448,8 @@ async function analyze() {
     role_input: role,
     experience_years: parseInt(experience),
     tech_stack: stack.split(/[,\s]+/).filter(Boolean),
-    exposure_level: level
+    exposure_level: level,
+    email: email
   };
 
   loading.classList.remove('visible');
@@ -467,7 +473,8 @@ async function selectMove(move, el) {
     experience_years: currentSession.experience_years,
     tech_stack: currentSession.tech_stack.join(', '),
     exposure_level: currentSession.exposure_level,
-    selected_next_move: move
+    selected_next_move: move,
+    email: currentSession.email || null
   };
 
   console.log('[HumanExodus] Saving:', record);

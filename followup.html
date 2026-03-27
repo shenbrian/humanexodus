@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HumanExodus — 30 Day Follow-up</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0a0a0a; --surface: #111111; --border: #222222;
+    --text: #e8e8e8; --muted: #555555; --accent: #c8f562;
+    --warn: #f5a623; --danger: #ff4444;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+  }
+  html, body { background: var(--bg); color: var(--text); font-family: var(--mono); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+  .page { max-width: 600px; margin: 0 auto; padding: 60px 24px 120px; }
+  .header { margin-bottom: 48px; border-left: 2px solid var(--accent); padding-left: 16px; }
+  .header-label { font-size: 10px; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+  .header h1 { font-size: 20px; font-weight: 600; color: var(--accent); }
+  .header p { font-size: 12px; color: var(--muted); margin-top: 4px; font-family: var(--sans); }
+  .session-info { background: var(--surface); border: 1px solid var(--border); padding: 16px 20px; margin-bottom: 36px; font-size: 12px; }
+  .session-info .label { color: var(--muted); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .session-info .value { color: var(--text); font-family: var(--sans); }
+  .field { margin-bottom: 24px; }
+  .field label { display: block; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .option-btn {
+    background: var(--surface); border: 1px solid var(--border); color: var(--text);
+    font-family: var(--mono); font-size: 11px; padding: 12px 14px;
+    cursor: pointer; text-align: left; transition: border-color 0.15s, color 0.15s; line-height: 1.4;
+  }
+  .option-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .option-btn.selected { border-color: var(--accent); color: var(--accent); background: #0f1a00; }
+  textarea {
+    width: 100%; background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: var(--sans); font-size: 13px;
+    padding: 12px 14px; outline: none; resize: vertical; min-height: 80px;
+    transition: border-color 0.15s;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--muted); }
+  .btn {
+    background: var(--accent); color: #000; border: none;
+    font-family: var(--mono); font-size: 12px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 14px 28px; cursor: pointer; transition: opacity 0.15s; width: 100%;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .success { display: none; margin-top: 24px; padding: 20px; border: 1px solid var(--accent); }
+  .success.visible { display: block; }
+  .success-title { font-size: 13px; color: var(--accent); margin-bottom: 6px; }
+  .success-msg { font-size: 12px; color: var(--muted); font-family: var(--sans); }
+  .error-msg { font-size: 12px; color: var(--danger); margin-top: 12px; display: none; }
+  .error-msg.visible { display: block; }
+  .not-found { text-align: center; padding: 60px 0; color: var(--muted); font-size: 13px; }
+  .loading-msg { color: var(--muted); font-size: 12px; padding: 20px 0; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="header-label">v0.4 / outcome tracking</div>
+    <h1>30 Days Later</h1>
+    <p>What actually happened? Your response makes the data real.</p>
+  </div>
+
+  <div id="content">
+    <div class="loading-msg">Loading your session...</div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://xsnjqbxarzflxgczaqev.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbmpxYnhhcnpmbHhnY3phcWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1OTAxMjEsImV4cCI6MjA5MDE2NjEyMX0.4yDUnjddwnV2Y8stHuXQuwWr4qLP2izLyohX6hztZR4';
+
+const OUTCOMES = [
+  { key: 'stayed_same', label: 'Stayed in same role' },
+  { key: 'learned_ai', label: 'Learned AI skills' },
+  { key: 'switched_role', label: 'Switched role' },
+  { key: 'still_deciding', label: 'Still deciding' },
+  { key: 'lost_job', label: 'Role was eliminated' },
+  { key: 'other', label: 'Something else' }
+];
+
+let selectedOutcome = null;
+let sessionData = null;
+
+function getSessionId() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('sid');
+}
+
+async function loadSession(sid) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/sessions?session_id=eq.${sid}&select=*`, {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` }
+  });
+  const data = await res.json();
+  return data[0] || null;
+}
+
+async function saveFollowUp(sid, outcome, notes) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/follow_ups`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({
+      session_id: sid,
+      email: sessionData?.email || null,
+      actual_outcome: outcome,
+      notes: notes,
+      follow_up_date: new Date().toISOString()
+    })
+  });
+  return res.ok;
+}
+
+function selectOutcome(key, btn) {
+  selectedOutcome = key;
+  document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+async function submit() {
+  if (!selectedOutcome) {
+    document.getElementById('error-msg').classList.add('visible');
+    return;
+  }
+  document.getElementById('error-msg').classList.remove('visible');
+  const notes = document.getElementById('notes').value.trim();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+
+  const sid = getSessionId();
+  const ok = await saveFollowUp(sid, selectedOutcome, notes);
+
+  if (ok) {
+    document.getElementById('success').classList.add('visible');
+    btn.style.display = 'none';
+  } else {
+    btn.disabled = false;
+    btn.textContent = 'Submit';
+    document.getElementById('error-msg').textContent = 'Something went wrong. Please try again.';
+    document.getElementById('error-msg').classList.add('visible');
+  }
+}
+
+async function init() {
+  const sid = getSessionId();
+  const content = document.getElementById('content');
+
+  if (!sid) {
+    content.innerHTML = `<div class="not-found">No session ID found.<br>Please use the link from your follow-up email.</div>`;
+    return;
+  }
+
+  try {
+    sessionData = await loadSession(sid);
+  } catch(e) {
+    sessionData = null;
+  }
+
+  if (!sessionData) {
+    content.innerHTML = `<div class="not-found">Session not found.<br>The link may have expired or be incorrect.</div>`;
+    return;
+  }
+
+  const intentLabel = {
+    learn_ai: 'Learn AI skills', switch_role: 'Switch role',
+    stay_same: 'Stay same', not_sure: 'Not sure'
+  }[sessionData.selected_next_move] || sessionData.selected_next_move;
+
+  content.innerHTML = `
+    <div class="session-info">
+      <div class="label">Your original session</div>
+      <div class="value">${sessionData.role_input} · ${sessionData.experience_years} years · ${sessionData.exposure_level} exposure</div>
+      <div style="margin-top:6px;font-size:11px;color:var(--muted)">You said you would: <span style="color:var(--accent)">${intentLabel}</span></div>
+    </div>
+
+    <div class="field">
+      <label>What actually happened?</label>
+      <div class="options">
+        ${OUTCOMES.map(o => `
+          <button class="option-btn" onclick="selectOutcome('${o.key}', this)">${o.label}</button>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Anything to add? <span style="color:var(--muted);font-size:9px">(optional)</span></label>
+      <textarea id="notes" placeholder="What drove your decision? What surprised you?"></textarea>
+    </div>
+
+    <button class="btn" id="submit-btn" onclick="submit()">Submit</button>
+    <div class="error-msg" id="error-msg">Please select what actually happened.</div>
+
+    <div class="success" id="success">
+      <div class="success-title">Signal recorded.</div>
+      <div class="success-msg">Your outcome has been added to the dataset. This is how the system learns what actually happens — not just what people intend.</div>
+    </div>
+  `;
+}
+
+init();
+</script>
+</body>
+</html>
