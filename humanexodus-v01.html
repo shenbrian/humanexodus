@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HumanExodus</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --text: #e8e8e8;
+    --muted: #555555;
+    --accent: #c8f562;
+    --warn: #f5a623;
+    --danger: #ff4444;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 24px 120px;
+  }
+
+  /* HEADER */
+  .header {
+    margin-bottom: 56px;
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
+  }
+  .header-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-family: var(--sans);
+    font-weight: 300;
+  }
+
+  /* FORM */
+  .form-section { margin-bottom: 40px; }
+
+  .field { margin-bottom: 20px; }
+  .field label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .field input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+  .field input:focus { border-color: var(--accent); }
+  .field input::placeholder { color: var(--muted); }
+
+  .btn {
+    background: var(--accent);
+    color: #000;
+    border: none;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    width: 100%;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* OUTPUT */
+  .output-section { display: none; }
+  .output-section.visible { display: block; }
+
+  .block { margin-bottom: 36px; }
+
+  .block-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  /* Exposure */
+  .exposure-level {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    margin-bottom: 16px;
+  }
+  .exposure-level.HIGH { color: var(--danger); }
+  .exposure-level.MEDIUM { color: var(--warn); }
+  .exposure-level.LOW { color: var(--accent); }
+
+  .task-group { margin-bottom: 14px; }
+  .task-group-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .task-list { list-style: none; padding: 0; }
+  .task-list li {
+    font-size: 13px;
+    color: var(--text);
+    padding: 4px 0;
+    padding-left: 12px;
+    position: relative;
+    font-family: var(--sans);
+    font-weight: 300;
+  }
+  .task-list li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--muted);
+  }
+
+  /* Moves */
+  .move-item {
+    border-left: 1px solid var(--border);
+    padding-left: 16px;
+    margin-bottom: 16px;
+    transition: border-color 0.15s;
+  }
+  .move-item:hover { border-color: var(--accent); }
+  .move-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 3px;
+  }
+  .move-desc {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  /* Actions */
+  .action-list { list-style: none; padding: 0; }
+  .action-list li {
+    font-size: 13px;
+    padding: 6px 0;
+    padding-left: 16px;
+    position: relative;
+    font-family: var(--sans);
+    font-weight: 300;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+  .action-list li:last-child { border-bottom: none; }
+  .action-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* Loading */
+  .loading {
+    display: none;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 20px 0;
+  }
+  .loading.visible { display: block; }
+  .loading-dot {
+    display: inline-block;
+    animation: blink 1.2s infinite;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,100%{opacity:0.2} 50%{opacity:1} }
+
+  /* FEEDBACK */
+  .feedback-section {
+    display: none;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+  .feedback-section.visible { display: block; }
+
+  .feedback-prompt {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .next-move-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .next-move-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 12px 14px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s, color 0.15s;
+    line-height: 1.4;
+  }
+  .next-move-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .next-move-btn.selected {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: #0f1a00;
+  }
+
+  .feedback-confirm {
+    display: none;
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--sans);
+  }
+  .feedback-confirm.visible { display: block; }
+
+  .error-msg {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 12px;
+    display: none;
+  }
+  .error-msg.visible { display: block; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-label">v0.1 / observation layer</div>
+    <h1>HumanExodus</h1>
+    <p>Track how engineers adapt to AI pressure.</p>
+  </div>
+
+  <!-- INPUT -->
+  <div class="form-section">
+    <div class="field">
+      <label>Current Role</label>
+      <input type="text" id="role" placeholder="e.g. Backend Engineer" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Years of Experience</label>
+      <input type="number" id="experience" placeholder="e.g. 5" min="0" max="50">
+    </div>
+    <div class="field">
+      <label>Tech Stack</label>
+      <input type="text" id="stack" placeholder="e.g. Java, Spring, AWS">
+    </div>
+    <button class="btn" id="analyze-btn" onclick="analyze()">Analyse my position</button>
+    <div class="error-msg" id="error-msg">Please fill in all fields before analysing.</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- LOADING -->
+  <div class="loading" id="loading">
+    analysing<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-section" id="output">
+
+    <!-- Block A: Exposure -->
+    <div class="block">
+      <div class="block-label">AI Exposure</div>
+      <div class="exposure-level" id="exposure-level">—</div>
+      <div class="task-group">
+        <div class="task-group-label">High-risk tasks</div>
+        <ul class="task-list" id="high-risk-list"></ul>
+      </div>
+      <div class="task-group">
+        <div class="task-group-label">Defensible tasks</div>
+        <ul class="task-list" id="defensible-list"></ul>
+      </div>
+    </div>
+
+    <!-- Block B: Adjacent Moves -->
+    <div class="block">
+      <div class="block-label">Adjacent Moves</div>
+      <div id="moves-list"></div>
+    </div>
+
+    <!-- Block C: Actions -->
+    <div class="block">
+      <div class="block-label">Actions</div>
+      <ul class="action-list" id="actions-list"></ul>
+    </div>
+
+    <!-- FEEDBACK -->
+    <div class="feedback-section" id="feedback-section">
+      <div class="feedback-prompt">What are you most likely to do next?</div>
+      <div class="next-move-options">
+        <button class="next-move-btn" onclick="selectMove('stay_same', this)">Stay in current role</button>
+        <button class="next-move-btn" onclick="selectMove('learn_ai', this)">Learn AI-related skills</button>
+        <button class="next-move-btn" onclick="selectMove('switch_role', this)">Switch role</button>
+        <button class="next-move-btn" onclick="selectMove('not_sure', this)">Not sure</button>
+      </div>
+      <div class="feedback-confirm" id="feedback-confirm">Signal captured. Thank you.</div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─── Rule-based exposure engine ───────────────────────────────────────────────
+
+const HIGH_RISK_KEYWORDS = [
+  'crud', 'boilerplate', 'script', 'automation', 'etl', 'data entry',
+  'qa', 'testing', 'manual test', 'report', 'documentation', 'support',
+  'junior', 'excel', 'sql', 'wordpress', 'no-code', 'low-code'
+];
+
+const HIGH_EXPOSURE_ROLES = [
+  'junior', 'analyst', 'qa', 'tester', 'data entry', 'content',
+  'copywriter', 'reporter', 'coordinator', 'support', 'helpdesk'
+];
+
+const LOW_EXPOSURE_ROLES = [
+  'principal', 'staff', 'director', 'vp', 'cto', 'architect',
+  'researcher', 'ml', 'ai', 'hardware', 'embedded', 'robotics', 'ux', 'design'
+];
+
+const EXPOSURE_MAP = {
+  'frontend': { level: 'HIGH', reason: 'UI generation tools accelerate frontend output significantly' },
+  'backend': { level: 'HIGH', reason: 'Code generation handles routine backend patterns well' },
+  'fullstack': { level: 'HIGH', reason: 'Both ends of the stack are targeted by AI tooling' },
+  'devops': { level: 'MEDIUM', reason: 'Automation scripting is at risk but infrastructure judgment is not' },
+  'data': { level: 'HIGH', reason: 'Data pipelines and analysis are increasingly automatable' },
+  'ml': { level: 'LOW', reason: 'ML engineers are building the systems—displacement risk is low for now' },
+  'product': { level: 'MEDIUM', reason: 'Roadmapping and prioritisation still require human judgment' },
+  'mobile': { level: 'HIGH', reason: 'App scaffolding is heavily assisted by AI code tools' },
+  'security': { level: 'LOW', reason: 'Security requires adversarial reasoning AI handles poorly' },
+  'embedded': { level: 'LOW', reason: 'Hardware constraints and real-time requirements limit AI substitution' },
+};
+
+const TASK_LIBRARY = {
+  HIGH: {
+    highRisk: ['Writing boilerplate code', 'Routine CRUD operations', 'Generating test cases', 'Writing documentation'],
+    defensible: ['System design decisions', 'Stakeholder communication', 'Code review judgment', 'Production incident response']
+  },
+  MEDIUM: {
+    highRisk: ['Scripting and automation', 'Standard report generation', 'Basic data queries'],
+    defensible: ['Process architecture', 'Team coordination', 'Strategic trade-offs', 'Client relationships']
+  },
+  LOW: {
+    highRisk: ['Templated analysis', 'Standard documentation'],
+    defensible: ['Specialised domain knowledge', 'Physical-world constraints', 'Novel problem framing', 'Regulatory judgment']
+  }
+};
+
+function computeExposure(role, experience, stack) {
+  const r = role.toLowerCase();
+  const s = stack.toLowerCase();
+
+  // Seniority modifier
+  let seniorityMod = 0;
+  if (experience >= 10) seniorityMod = -1;
+  else if (experience <= 2) seniorityMod = 1;
+
+  // Check explicit low-exposure roles
+  for (const kw of LOW_EXPOSURE_ROLES) {
+    if (r.includes(kw)) return { level: 'LOW', tasks: TASK_LIBRARY.LOW };
+  }
+
+  // Check explicit high-exposure roles
+  for (const kw of HIGH_EXPOSURE_ROLES) {
+    if (r.includes(kw)) return { level: 'HIGH', tasks: TASK_LIBRARY.HIGH };
+  }
+
+  // Check exposure map
+  for (const [key, val] of Object.entries(EXPOSURE_MAP)) {
+    if (r.includes(key)) {
+      let levels = ['LOW', 'MEDIUM', 'HIGH'];
+      let idx = levels.indexOf(val.level);
+      idx = Math.max(0, Math.min(2, idx + seniorityMod));
+      const finalLevel = levels[idx];
+      return { level: finalLevel, tasks: TASK_LIBRARY[finalLevel] };
+    }
+  }
+
+  // Stack-based fallback
+  const stackItems = s.split(/[,\s]+/);
+  const highRiskStackCount = stackItems.filter(t =>
+    HIGH_RISK_KEYWORDS.some(k => t.includes(k))
+  ).length;
+
+  if (highRiskStackCount >= 2) return { level: 'HIGH', tasks: TASK_LIBRARY.HIGH };
+
+  const defaultLevel = seniorityMod > 0 ? 'HIGH' : seniorityMod < 0 ? 'LOW' : 'MEDIUM';
+  return { level: defaultLevel, tasks: TASK_LIBRARY[defaultLevel] };
+}
+
+// ─── Claude API call for moves + actions ──────────────────────────────────────
+
+async function fetchMovesFromClaude(role, experience, stack, exposureLevel) {
+  const prompt = `You are an advisor helping engineers navigate AI-driven career disruption.
+
+Engineer profile:
+- Role: ${role}
+- Experience: ${experience} years
+- Tech stack: ${stack}
+- AI exposure level: ${exposureLevel}
+
+Return ONLY valid JSON with this exact structure (no markdown, no extra text):
+{
+  "moves": [
+    {"title": "...", "description": "one sentence, specific to their stack/role"},
+    {"title": "...", "description": "one sentence, specific to their stack/role"},
+    {"title": "...", "description": "one sentence, specific to their stack/role"}
+  ],
+  "actions": [
+    "Concrete action they can start this week",
+    "Concrete action in the next 30 days",
+    "Concrete action in the next 90 days"
+  ]
+}
+
+Rules:
+- Moves should be adjacent roles or skill directions, not generic advice
+- Actions must be specific and time-bound
+- No fluff. No encouragement. Just signal.`;
+
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!response.ok) throw new Error(`API error: ${response.status}`);
+  const data = await response.json();
+  const text = data.content.map(b => b.text || '').join('');
+  const clean = text.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+// ─── Session state ─────────────────────────────────────────────────────────────
+
+let currentSession = null;
+
+function generateSessionId() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+  });
+}
+
+// ─── Main analyze function ─────────────────────────────────────────────────────
+
+async function analyze() {
+  const role = document.getElementById('role').value.trim();
+  const experience = document.getElementById('experience').value.trim();
+  const stack = document.getElementById('stack').value.trim();
+  const errorEl = document.getElementById('error-msg');
+
+  if (!role || !experience || !stack) {
+    errorEl.classList.add('visible');
+    return;
+  }
+  errorEl.classList.remove('visible');
+
+  // Reset UI
+  document.getElementById('output').classList.remove('visible');
+  document.getElementById('feedback-section').classList.remove('visible');
+  document.getElementById('feedback-confirm').classList.remove('visible');
+  document.querySelectorAll('.next-move-btn').forEach(b => b.classList.remove('selected'));
+
+  const loading = document.getElementById('loading');
+  const btn = document.getElementById('analyze-btn');
+  loading.classList.add('visible');
+  btn.disabled = true;
+
+  // Rule-based exposure
+  const { level, tasks } = computeExposure(role, parseInt(experience), stack);
+
+  // Render exposure immediately
+  const expEl = document.getElementById('exposure-level');
+  expEl.textContent = `AI Exposure: ${level}`;
+  expEl.className = `exposure-level ${level}`;
+
+  renderList('high-risk-list', tasks.highRisk);
+  renderList('defensible-list', tasks.defensible);
+
+  // Claude for moves + actions
+  try {
+    const claude = await fetchMovesFromClaude(role, experience, stack, level);
+    renderMoves(claude.moves);
+    renderList('actions-list', claude.actions, true);
+  } catch (e) {
+    renderMoves([
+      { title: 'AI-augmented version of your role', description: 'Focus on prompting and orchestration rather than raw output.' },
+      { title: 'Platform or tooling engineer', description: 'Build the infrastructure others build on.' },
+      { title: 'Domain specialist', description: 'Go deeper into a vertical where AI still needs human judgment.' }
+    ]);
+    renderList('actions-list', [
+      'Identify which 20% of your tasks AI can already do today',
+      'Pick one AI tool in your stack and learn it deeply this month',
+      'Talk to 3 engineers who have successfully made a lateral move'
+    ], true);
+  }
+
+  // Store session
+  currentSession = {
+    session_id: generateSessionId(),
+    timestamp: new Date().toISOString(),
+    role_input: role,
+    experience_years: parseInt(experience),
+    tech_stack: stack.split(/[,\s]+/).filter(Boolean),
+    exposure_level: level
+  };
+
+  loading.classList.remove('visible');
+  document.getElementById('output').classList.add('visible');
+  document.getElementById('feedback-section').classList.add('visible');
+  btn.disabled = false;
+
+  // Scroll to output
+  setTimeout(() => {
+    document.getElementById('output').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function renderList(id, items, isAction = false) {
+  const ul = document.getElementById(id);
+  ul.innerHTML = items.map(item => `<li>${item}</li>`).join('');
+}
+
+function renderMoves(moves) {
+  const container = document.getElementById('moves-list');
+  container.innerHTML = moves.map(m => `
+    <div class="move-item">
+      <div class="move-title">${m.title}</div>
+      <div class="move-desc">${m.description}</div>
+    </div>
+  `).join('');
+}
+
+// ─── Feedback capture ──────────────────────────────────────────────────────────
+
+function selectMove(move, el) {
+  if (!currentSession) return;
+
+  document.querySelectorAll('.next-move-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+
+  const feedback = {
+    session_id: currentSession.session_id,
+    selected_next_move: move,
+    timestamp: new Date().toISOString()
+  };
+
+  const fullLog = { ...currentSession, ...feedback };
+
+  console.log('[HumanExodus]', JSON.stringify(fullLog, null, 2));
+
+  document.getElementById('feedback-confirm').classList.add('visible');
+}
+</script>
+</body>
+</html>
