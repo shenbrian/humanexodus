@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HumanExodus — Patterns</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --text: #e8e8e8;
+    --muted: #555555;
+    --accent: #c8f562;
+    --warn: #f5a623;
+    --danger: #ff4444;
+    --blue: #4fc3f7;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 24px 120px;
+  }
+
+  .header {
+    margin-bottom: 48px;
+    border-left: 2px solid var(--accent);
+    padding-left: 16px;
+  }
+  .header-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+    font-family: var(--sans);
+  }
+  .header-meta {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .header-meta span {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .back-link {
+    display: inline-block;
+    font-size: 11px;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 32px;
+    letter-spacing: 0.05em;
+  }
+  .back-link:hover { color: var(--accent); }
+
+  .section { margin-bottom: 48px; }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* STAT CARDS */
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+  .stat-value {
+    font-size: 36px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* BAR CHART */
+  .bar-group { margin-bottom: 20px; }
+  .bar-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+  .bar-name {
+    font-size: 12px;
+    color: var(--text);
+    font-family: var(--sans);
+  }
+  .bar-count {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .bar-track {
+    height: 6px;
+    background: var(--border);
+    width: 100%;
+  }
+  .bar-fill {
+    height: 6px;
+    transition: width 0.6s ease;
+  }
+  .bar-fill.learn_ai { background: var(--accent); }
+  .bar-fill.switch_role { background: var(--warn); }
+  .bar-fill.stay_same { background: var(--blue); }
+  .bar-fill.not_sure { background: var(--muted); }
+
+  /* EXPOSURE TABLE */
+  .exposure-block {
+    margin-bottom: 28px;
+    border: 1px solid var(--border);
+    padding: 16px 20px;
+  }
+  .exposure-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+  .exposure-title.HIGH { color: var(--danger); }
+  .exposure-title.MEDIUM { color: var(--warn); }
+  .exposure-title.LOW { color: var(--accent); }
+
+  .move-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .move-label {
+    font-size: 11px;
+    color: var(--muted);
+    width: 120px;
+    flex-shrink: 0;
+    font-family: var(--sans);
+  }
+  .move-bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+  }
+  .move-bar-fill {
+    height: 4px;
+    transition: width 0.6s ease;
+  }
+  .move-bar-fill.learn_ai { background: var(--accent); }
+  .move-bar-fill.switch_role { background: var(--warn); }
+  .move-bar-fill.stay_same { background: var(--blue); }
+  .move-bar-fill.not_sure { background: var(--muted); }
+  .move-pct {
+    font-size: 11px;
+    color: var(--text);
+    width: 36px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ROLE TABLE */
+  .role-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+  }
+  .role-row:last-child { border-bottom: none; }
+  .role-name { color: var(--text); font-family: var(--sans); font-weight: 300; }
+  .role-badges { display: flex; gap: 6px; align-items: center; }
+  .badge {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border: 1px solid;
+  }
+  .badge.HIGH { color: var(--danger); border-color: var(--danger); }
+  .badge.MEDIUM { color: var(--warn); border-color: var(--warn); }
+  .badge.LOW { color: var(--accent); border-color: var(--accent); }
+  .badge.learn_ai { color: var(--accent); border-color: var(--accent); }
+  .badge.switch_role { color: var(--warn); border-color: var(--warn); }
+  .badge.stay_same { color: var(--blue); border-color: var(--blue); }
+  .badge.not_sure { color: var(--muted); border-color: var(--muted); }
+
+  .loading-msg {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 40px 0;
+  }
+  .loading-dot { display: inline-block; animation: blink 1.2s infinite; }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,100%{opacity:0.2} 50%{opacity:1} }
+
+  .refresh-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+    margin-left: 12px;
+  }
+  .refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back-link" href="humanexodus-v01.html">← back to tool</a>
+
+  <div class="header">
+    <div class="header-label">v0.3 / pattern layer</div>
+    <h1>HumanExodus — Patterns</h1>
+    <p>Observed signals from real engineer sessions.</p>
+    <div class="header-meta" id="header-meta">
+      Loading<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+    </div>
+  </div>
+
+  <div id="content">
+    <div class="loading-msg">
+      Loading signals<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://xsnjqbxarzflxgczaqev.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbmpxYnhhcnpmbHhnY3phcWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1OTAxMjEsImV4cCI6MjA5MDE2NjEyMX0.4yDUnjddwnV2Y8stHuXQuwWr4qLP2izLyohX6hztZR4';
+
+const MOVE_LABELS = {
+  learn_ai: 'Learn AI skills',
+  switch_role: 'Switch role',
+  stay_same: 'Stay same',
+  not_sure: 'Not sure'
+};
+
+async function fetchSessions() {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/sessions?select=*&order=created_at.desc&limit=1000`, {
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+    }
+  });
+  if (!response.ok) throw new Error('Failed to fetch');
+  return await response.json();
+}
+
+function pct(count, total) {
+  if (total === 0) return 0;
+  return Math.round((count / total) * 100);
+}
+
+function countBy(arr, key) {
+  return arr.reduce((acc, item) => {
+    const val = item[key] || 'unknown';
+    acc[val] = (acc[val] || 0) + 1;
+    return acc;
+  }, {});
+}
+
+function renderPatterns(sessions) {
+  const total = sessions.length;
+
+  // Update header
+  const firstDate = sessions[sessions.length - 1]?.created_at?.split('T')[0] || '—';
+  document.getElementById('header-meta').innerHTML =
+    `<span>${total}</span> sessions recorded since ${firstDate} &nbsp;<button class="refresh-btn" onclick="load()">↻ refresh</button>`;
+
+  // Overall next move distribution
+  const moveCounts = countBy(sessions, 'selected_next_move');
+  const moves = ['learn_ai', 'switch_role', 'stay_same', 'not_sure'];
+
+  // By exposure level
+  const byExposure = { HIGH: [], MEDIUM: [], LOW: [] };
+  sessions.forEach(s => {
+    if (byExposure[s.exposure_level]) byExposure[s.exposure_level].push(s);
+  });
+
+  // Build HTML
+  let html = '';
+
+  // Stat cards
+  const highCount = byExposure.HIGH.length;
+  const medCount = byExposure.MEDIUM.length;
+  const lowCount = byExposure.LOW.length;
+
+  html += `
+    <div class="stat-row">
+      <div class="stat-card">
+        <div class="stat-value">${total}</div>
+        <div class="stat-label">Total Sessions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--danger)">${highCount}</div>
+        <div class="stat-label">High Exposure</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:var(--warn)">${medCount}</div>
+        <div class="stat-label">Medium Exposure</div>
+      </div>
+    </div>
+  `;
+
+  // Overall next move distribution
+  html += `<div class="section">`;
+  html += `<div class="section-label">Overall — What engineers intend to do next</div>`;
+  moves.forEach(move => {
+    const count = moveCounts[move] || 0;
+    const p = pct(count, total);
+    html += `
+      <div class="bar-group">
+        <div class="bar-header">
+          <span class="bar-name">${MOVE_LABELS[move]}</span>
+          <span class="bar-count">${count} sessions (${p}%)</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill ${move}" style="width:${p}%"></div>
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  // By exposure level
+  html += `<div class="section">`;
+  html += `<div class="section-label">Next move by AI exposure level</div>`;
+
+  ['HIGH', 'MEDIUM', 'LOW'].forEach(level => {
+    const group = byExposure[level];
+    if (group.length === 0) return;
+    const groupMoves = countBy(group, 'selected_next_move');
+    html += `<div class="exposure-block">`;
+    html += `<div class="exposure-title ${level}">${level} Exposure — ${group.length} sessions</div>`;
+    moves.forEach(move => {
+      const count = groupMoves[move] || 0;
+      const p = pct(count, group.length);
+      html += `
+        <div class="move-row">
+          <div class="move-label">${MOVE_LABELS[move]}</div>
+          <div class="move-bar-track">
+            <div class="move-bar-fill ${move}" style="width:${p}%"></div>
+          </div>
+          <div class="move-pct">${p}%</div>
+        </div>
+      `;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+
+  // Recent sessions
+  html += `<div class="section">`;
+  html += `<div class="section-label">Recent sessions</div>`;
+  sessions.slice(0, 20).forEach(s => {
+    html += `
+      <div class="role-row">
+        <span class="role-name">${s.role_input}</span>
+        <div class="role-badges">
+          <span class="badge ${s.exposure_level}">${s.exposure_level}</span>
+          <span class="badge ${s.selected_next_move}">${MOVE_LABELS[s.selected_next_move] || s.selected_next_move}</span>
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+
+  document.getElementById('content').innerHTML = html;
+}
+
+async function load() {
+  try {
+    const sessions = await fetchSessions();
+    renderPatterns(sessions);
+  } catch (e) {
+    document.getElementById('content').innerHTML =
+      `<div class="loading-msg" style="color:var(--danger)">Failed to load data. Check console.</div>`;
+    console.error(e);
+  }
+}
+
+load();
+</script>
+</body>
+</html>
