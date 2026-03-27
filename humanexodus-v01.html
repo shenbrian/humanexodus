@@ -601,23 +601,53 @@ function renderMoves(moves) {
   `).join('');
 }
 
+// ─── Supabase config ───────────────────────────────────────────────────────────
+
+const SUPABASE_URL = 'https://xsnjqbxarzflxgczaqev.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbmpxYnhhcnpmbHhnY3phcWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1NzYwMDMsImV4cCI6MjA2MTE1MjAwM30.yQOFBMaVMYcMEGXTEMLPMsUhkWGZFPTjfMZIGqEAdxU';
+
+async function saveToSupabase(record) {
+  try {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/sessions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify(record)
+    });
+    if (!response.ok) {
+      const err = await response.text();
+      console.error('[HumanExodus] Supabase error:', err);
+    } else {
+      console.log('[HumanExodus] Session saved to database.');
+    }
+  } catch (e) {
+    console.error('[HumanExodus] Network error:', e);
+  }
+}
+
 // ─── Feedback capture ──────────────────────────────────────────────────────────
 
-function selectMove(move, el) {
+async function selectMove(move, el) {
   if (!currentSession) return;
 
   document.querySelectorAll('.next-move-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
 
-  const feedback = {
+  const record = {
     session_id: currentSession.session_id,
-    selected_next_move: move,
-    timestamp: new Date().toISOString()
+    role_input: currentSession.role_input,
+    experience_years: currentSession.experience_years,
+    tech_stack: currentSession.tech_stack.join(', '),
+    exposure_level: currentSession.exposure_level,
+    selected_next_move: move
   };
 
-  const fullLog = { ...currentSession, ...feedback };
-
-  console.log('[HumanExodus]', JSON.stringify(fullLog, null, 2));
+  console.log('[HumanExodus] Saving:', record);
+  await saveToSupabase(record);
 
   document.getElementById('feedback-confirm').classList.add('visible');
 }
