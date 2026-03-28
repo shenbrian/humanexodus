@@ -3,7 +3,7 @@
   "$id": "https://github.com/shenbrian/humanexodus/schema/humanexodus_record.schema.json",
   "title": "HumanExodus Repositioning Record",
   "description": "A single repositioning event capturing AI-induced pressure, human response, and observed outcome. The atomic unit of the Human Adaptation Graph.",
-  "version": "0.1",
+  "version": "0.2",
   "type": "object",
 
   "required": [
@@ -11,10 +11,9 @@
     "person_id",
     "submitted_at",
     "entry_type",
-    "industry",
-    "role_title",
-    "career_stage",
+    "role",
     "pressure",
+    "workflow_change",
     "response",
     "outcome",
     "narrative",
@@ -25,9 +24,8 @@
 
     "record_id": {
       "type": "string",
-      "description": "Unique identifier for this record. Format: HX-XXXXXX",
-      "pattern": "^HX-[0-9]{6}$",
-      "examples": ["HX-000001"]
+      "description": "Unique identifier for this record. Format: HX-SE-XXXXXX for engineer records.",
+      "examples": ["HX-SE-000001"]
     },
 
     "person_id": {
@@ -52,72 +50,105 @@
     "linked_record_id": {
       "type": "string",
       "description": "Required for entry_type=update or reflection. References the original record.",
-      "pattern": "^HX-[0-9]{6}$"
+      "examples": ["HX-SE-000001"]
     },
 
-    "industry": {
-      "type": "string",
-      "description": "The industry or sector the contributor operates in.",
-      "examples": [
-        "software_engineering",
-        "management_consulting",
-        "healthcare",
-        "finance",
-        "legal_services",
-        "education",
-        "marketing_advertising",
-        "architecture_design",
-        "journalism_media",
-        "accounting",
-        "logistics",
-        "retail",
-        "manufacturing",
-        "other"
-      ]
+    "role": {
+      "type": "object",
+      "required": ["level", "title", "focus_area", "years_experience"],
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "student",
+            "junior",
+            "mid",
+            "senior",
+            "lead",
+            "staff",
+            "principal",
+            "manager",
+            "independent",
+            "founder",
+            "unknown"
+          ],
+          "description": "Career level at time of submission."
+        },
+        "title": {
+          "type": "string",
+          "description": "Actual role title. Be specific.",
+          "examples": ["Backend Engineer", "Senior Consultant", "QA Engineer"]
+        },
+        "focus_area": {
+          "type": "string",
+          "enum": [
+            "backend",
+            "frontend",
+            "fullstack",
+            "mobile",
+            "infra",
+            "devops",
+            "data",
+            "ml",
+            "security",
+            "embedded",
+            "qa",
+            "other"
+          ],
+          "description": "Primary technical focus area."
+        },
+        "years_experience": {
+          "type": "string",
+          "description": "Years of professional experience as a range.",
+          "examples": ["0-1", "0-2", "3-5", "6-8", "9+"]
+        }
+      }
     },
 
-    "role_title": {
-      "type": "string",
-      "description": "The contributor's role title at the time of the pressure signal. Free text — be specific.",
-      "examples": ["Senior Consultant", "Backend Engineer", "Radiology Registrar"]
-    },
-
-    "location_region": {
-      "type": "string",
-      "description": "Optional. Broad geographic region. Not city or employer.",
-      "examples": ["Australia", "Southeast Asia", "Western Europe", "North America"]
-    },
-
-    "career_stage": {
-      "type": "string",
-      "enum": ["early", "mid", "senior", "executive", "founder", "independent", "unknown"],
-      "description": "Self-assessed career stage at time of submission."
+    "stack": {
+      "type": "object",
+      "description": "Technical stack at time of submission.",
+      "properties": {
+        "languages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Programming languages used.",
+          "examples": [["Python", "TypeScript"]]
+        },
+        "frameworks": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Frameworks, tools, and platforms used.",
+          "examples": [["FastAPI", "Node.js", "Kubernetes"]]
+        },
+        "environment": {
+          "type": "string",
+          "enum": ["cloud", "on_prem", "hybrid", "startup", "enterprise", "unknown"],
+          "description": "Working environment."
+        }
+      }
     },
 
     "pressure": {
       "type": "object",
-      "description": "The AI-induced pressure perceived or experienced.",
-      "required": [
-        "pressure_type",
-        "summary",
-        "severity_self_assessed",
-        "time_signal_first_noticed"
-      ],
+      "required": ["pressure_type", "signals", "severity_self_assessed", "time_first_noticed"],
       "properties": {
         "pressure_type": {
           "type": "string",
           "enum": [
             "replacement_pressure",
             "augmentation_pressure",
+            "productivity_pressure",
+            "skill_shift",
             "scope_reduction",
             "scope_expansion",
-            "skill_obsolescence_signal",
-            "productivity_expectation_shift",
-            "market_demand_shift",
-            "organizational_restructuring",
+            "tooling_disruption",
+            "hiring_signal_change",
             "opportunity_emergence",
+            "organizational_restructuring",
             "unclear"
-          ]
+          ],
+          "description": "The primary type of AI-induced pressure experienced."
         },
         "source": {
           "type": "string",
@@ -132,12 +163,17 @@
             "self_inference",
             "public_news",
             "unclear"
-          ]
+          ],
+          "description": "Where the pressure signal originated."
         },
-        "summary": {
-          "type": "string",
-          "description": "One to three sentences describing the pressure. Be specific — generic descriptions have low signal value.",
-          "maxLength": 500
+        "signals": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Concrete observed signals. Be specific — not opinions.",
+          "examples": [
+            ["Copilot used in code reviews", "AI-generated PRs increasing", "Faster sprint expectations"]
+          ]
         },
         "severity_self_assessed": {
           "type": "integer",
@@ -145,10 +181,10 @@
           "maximum": 5,
           "description": "1 = minor signal, 5 = existential threat to current role."
         },
-        "time_signal_first_noticed": {
+        "time_first_noticed": {
           "type": "string",
           "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
-          "description": "Month and year the pressure was first noticed. Format: YYYY-MM",
+          "description": "Month and year pressure first noticed. Format: YYYY-MM.",
           "examples": ["2026-02"]
         },
         "confidence_self_assessed": {
@@ -160,62 +196,79 @@
       }
     },
 
+    "workflow_change": {
+      "type": "object",
+      "required": ["before", "after"],
+      "description": "The most important field. Captures what actually changed in day-to-day work.",
+      "properties": {
+        "before": {
+          "type": "string",
+          "description": "How you worked before AI pressure changed your workflow. Be specific.",
+          "examples": ["Wrote most service logic and tests manually, debugging done through docs and team discussion."]
+        },
+        "after": {
+          "type": "string",
+          "description": "How you work now. Be specific.",
+          "examples": ["Uses AI for scaffolding endpoints and generating test cases, more time on API design and trade-offs."]
+        },
+        "ai_tools_used": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "AI tools that changed your workflow.",
+          "examples": [["GitHub Copilot", "ChatGPT", "Cursor"]]
+        }
+      }
+    },
+
     "response": {
       "type": "object",
+      "required": ["response_type", "actions"],
       "description": "The repositioning action taken in response to the pressure.",
-      "required": [
-        "response_type",
-        "actions_taken"
-      ],
       "properties": {
         "response_type": {
           "type": "string",
           "enum": [
+            "tool_adoption",
             "reskilling",
             "upskilling",
             "role_shift",
-            "industry_switch",
-            "tool_adoption",
+            "team_shift",
+            "managerial_transition",
             "entrepreneurship",
             "portfolio_career",
             "wait_and_observe",
             "resistance",
             "relocation",
             "other"
-          ]
+          ],
+          "description": "Primary type of response taken."
         },
-        "actions_taken": {
+        "actions": {
           "type": "array",
           "items": { "type": "string" },
           "minItems": 1,
           "description": "Concrete actions taken. Be specific.",
-          "examples": [
-            ["Started using AI tools in project scoping", "Shifted focus toward client-facing synthesis"]
-          ]
-        },
-        "response_start_time": {
-          "type": "string",
-          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
-          "description": "When the response began. Format: YYYY-MM"
+          "examples": [["Started using AI tools in project scoping", "Shifted focus toward client-facing synthesis"]]
         },
         "intent": {
           "type": "string",
           "enum": [
-            "preserve_relevance",
             "increase_leverage",
-            "exit_risk",
-            "explore_opportunity",
+            "preserve_role",
+            "avoid_risk",
+            "explore_new_path",
             "reduce_dependency",
             "unclear"
-          ]
+          ],
+          "description": "The underlying intent behind the response."
         }
       }
     },
 
     "outcome": {
       "type": "object",
-      "description": "The current or final outcome of the repositioning.",
       "required": ["status"],
+      "description": "The current or final outcome of the repositioning.",
       "properties": {
         "status": {
           "type": "string",
@@ -223,19 +276,21 @@
             "in_progress",
             "stabilized",
             "improved_position",
-            "role_lost",
             "role_changed",
+            "role_lost",
+            "burnout_increase",
             "income_reduced",
             "income_improved",
             "unclear"
-          ]
+          ],
+          "description": "Current outcome status."
         },
         "early_effect": {
           "type": "string",
-          "description": "What has happened so far. Optional for initial entries.",
+          "description": "What has happened so far. Be honest — imperfect clarity is fine.",
           "maxLength": 500
         },
-        "outcome_confidence": {
+        "confidence": {
           "type": "integer",
           "minimum": 1,
           "maximum": 5,
@@ -246,18 +301,18 @@
 
     "narrative": {
       "type": "object",
-      "description": "Short contextual framing to help interpret the structured fields.",
-      "required": ["short_context"],
+      "required": ["summary"],
+      "description": "Short contextual framing. Makes the record recognisable to others in similar situations.",
       "properties": {
-        "short_context": {
+        "summary": {
           "type": "string",
-          "description": "Two to four sentences of context. What made this situation specific to you?",
-          "maxLength": 800
+          "description": "Two to four sentences. What made this situation specific to you? Write calmly and observationally.",
+          "maxLength": 600
         },
         "path_next_considered": {
           "type": "string",
           "description": "What are you considering doing next? Optional.",
-          "maxLength": 400
+          "maxLength": 300
         }
       }
     },
@@ -279,7 +334,7 @@
         "version": {
           "type": "string",
           "description": "Schema version used for this record.",
-          "examples": ["0.1"]
+          "examples": ["0.2"]
         }
       }
     }
