@@ -3,3 +3,4 @@ Thumbs.db
 *.log
 node_modules/
 .env
+supabase.tar.gz
