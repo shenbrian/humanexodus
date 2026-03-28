@@ -1,177 +1,172 @@
-# Supabase CLI
+# HumanExodus
 
-[![Coverage Status](https://coveralls.io/repos/github/supabase/cli/badge.svg?branch=develop)](https://coveralls.io/github/supabase/cli?branch=develop) [![Bitbucket Pipelines](https://img.shields.io/bitbucket/pipelines/supabase-cli/setup-cli/master?style=flat-square&label=Bitbucket%20Canary)](https://bitbucket.org/supabase-cli/setup-cli/pipelines) [![Gitlab Pipeline Status](https://img.shields.io/gitlab/pipeline-status/sweatybridge%2Fsetup-cli?label=Gitlab%20Canary)
-](https://gitlab.com/sweatybridge/setup-cli/-/pipelines)
+> "We don't predict the future. We watch how people respond to it — and learn faster than anyone else."
 
-[Supabase](https://supabase.io) is an open source Firebase alternative. We're building the features of Firebase using enterprise-grade open source tools.
+**A longitudinal observation system for human adaptation under AI pressure.**
 
-This repository contains all the functionality for Supabase CLI.
+[![Live Tool](https://img.shields.io/badge/tool-live-brightgreen)](https://shenbrian.github.io/humanexodus/humanexodus-v01.html)
+[![Patterns](https://img.shields.io/badge/patterns-live-brightgreen)](https://shenbrian.github.io/humanexodus/patterns.html)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Open Source](https://img.shields.io/badge/open-source-orange)](https://github.com/shenbrian/humanexodus)
 
-- [x] Running Supabase locally
-- [x] Managing database migrations
-- [x] Creating and deploying Supabase Functions
-- [x] Generating types directly from your database schema
-- [x] Making authenticated HTTP requests to [Management API](https://supabase.com/docs/reference/api/introduction)
+---
 
-## Getting started
+## What this is
 
-### Install the CLI
+HumanExodus is **not** a career advice tool.
 
-Available via [NPM](https://www.npmjs.com) as dev dependency. To install:
+It is an **observation layer** — a system that captures how engineers actually respond to AI disruption, tracks what they intend to do, and follows up 30 days later to find out what really happened.
 
-```bash
-npm i supabase --save-dev
+The gap between intention and reality is the most valuable signal in the system.
+
+Most tools tell engineers what to do. HumanExodus watches what they actually do — and builds a dataset from it.
+
+---
+
+## Why it matters
+
+AI is restructuring the engineering profession in real time. But almost no one is measuring it systematically:
+
+- Career platforms collect clicks, not decisions
+- Surveys capture opinions, not behaviour
+- Job boards show outcomes, not the transitions that led there
+
+HumanExodus is building the first structured dataset of **how engineers adapt to AI** — role by role, stack by stack, over time.
+
+---
+
+## How it works
+
+```
+Engineer enters role + experience + stack
+        ↓
+System estimates AI exposure level (rule-based)
+        ↓
+Claude API generates personalised adjacent moves + actions
+        ↓
+Engineer selects intended next move
+        ↓
+Session saved to database [Session entity]
+        ↓
+30 days later: automated follow-up email
+        ↓
+Engineer reports what actually happened [Follow-up entity]
+        ↓
+Intention vs reality gap is measured
 ```
 
-When installing with yarn 4, you need to disable experimental fetch with the following nodejs config.
+---
 
-```
-NODE_OPTIONS=--no-experimental-fetch yarn add supabase
-```
+## Data model
 
-> **Note**
-For Bun versions below v1.0.17, you must add `supabase` as a [trusted dependency](https://bun.sh/guides/install/trusted) before running `bun add -D supabase`.
+Every session produces two structured records:
 
-<details>
-  <summary><b>macOS</b></summary>
-
-  Available via [Homebrew](https://brew.sh). To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To install the beta release channel:
-  
-  ```sh
-  brew install supabase/tap/supabase-beta
-  brew link --overwrite supabase-beta
-  ```
-  
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Windows</b></summary>
-
-  Available via [Scoop](https://scoop.sh). To install:
-
-  ```powershell
-  scoop bucket add supabase https://github.com/supabase/scoop-bucket.git
-  scoop install supabase
-  ```
-
-  To upgrade:
-
-  ```powershell
-  scoop update supabase
-  ```
-</details>
-
-<details>
-  <summary><b>Linux</b></summary>
-
-  Available via [Homebrew](https://brew.sh) and Linux packages.
-
-  #### via Homebrew
-
-  To install:
-
-  ```sh
-  brew install supabase/tap/supabase
-  ```
-
-  To upgrade:
-
-  ```sh
-  brew upgrade supabase
-  ```
-
-  #### via Linux packages
-
-  Linux packages are provided in [Releases](https://github.com/supabase/cli/releases). To install, download the `.apk`/`.deb`/`.rpm`/`.pkg.tar.zst` file depending on your package manager and run the respective commands.
-
-  ```sh
-  sudo apk add --allow-untrusted <...>.apk
-  ```
-
-  ```sh
-  sudo dpkg -i <...>.deb
-  ```
-
-  ```sh
-  sudo rpm -i <...>.rpm
-  ```
-
-  ```sh
-  sudo pacman -U <...>.pkg.tar.zst
-  ```
-</details>
-
-<details>
-  <summary><b>Other Platforms</b></summary>
-
-  You can also install the CLI via [go modules](https://go.dev/ref/mod#go-install) without the help of package managers.
-
-  ```sh
-  go install github.com/supabase/cli@latest
-  ```
-
-  Add a symlink to the binary in `$PATH` for easier access:
-
-  ```sh
-  ln -s "$(go env GOPATH)/bin/cli" /usr/bin/supabase
-  ```
-
-  This works on other non-standard Linux distros.
-</details>
-
-<details>
-  <summary><b>Community Maintained Packages</b></summary>
-
-  Available via [pkgx](https://pkgx.sh/). Package script [here](https://github.com/pkgxdev/pantry/blob/main/projects/supabase.com/cli/package.yml).
-  To install in your working directory:
-
-  ```bash
-  pkgx install supabase
-  ```
-
-  Available via [Nixpkgs](https://nixos.org/). Package script [here](https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/tools/supabase-cli/default.nix).
-</details>
-
-### Run the CLI
-
-```bash
-supabase bootstrap
+**Session** (captured at tool use)
+```json
+{
+  "session_id": "uuid",
+  "timestamp": "ISO8601",
+  "role_input": "Backend Engineer",
+  "experience_years": 5,
+  "tech_stack": ["Java", "Spring", "AWS"],
+  "exposure_level": "HIGH",
+  "selected_next_move": "learn_ai",
+  "email": "optional"
+}
 ```
 
-Or using npx:
-
-```bash
-npx supabase bootstrap
+**Follow-up** (captured 30 days later)
+```json
+{
+  "session_id": "uuid",
+  "actual_outcome": "switched_role",
+  "notes": "Got a job as an AI engineer at a startup",
+  "follow_up_date": "ISO8601"
+}
 ```
 
-The bootstrap command will guide you through the process of setting up a Supabase project using one of the [starter](https://github.com/supabase-community/supabase-samples/blob/main/samples.json) templates.
+The delta between `selected_next_move` and `actual_outcome` is the signal.
 
-## Docs
+---
 
-Command & config reference can be found [here](https://supabase.com/docs/reference/cli/about).
+## System architecture
 
-## Breaking changes
-
-We follow semantic versioning for changes that directly impact CLI commands, flags, and configurations.
-
-However, due to dependencies on other service images, we cannot guarantee that schema migrations, seed.sql, and generated types will always work for the same CLI major version. If you need such guarantees, we encourage you to pin a specific version of CLI in package.json.
-
-## Developing
-
-To run from source:
-
-```sh
-# Go >= 1.22
-go run . help
 ```
+GitHub Pages (static frontend)
+    humanexodus-v01.html  — tool + session capture
+    patterns.html         — live pattern dashboard
+    followup.html         — 30-day outcome collection
+
+Supabase (database + backend)
+    sessions table        — all engineer sessions
+    follow_ups table      — 30-day outcome records
+    Edge Function         — daily follow-up email sender
+
+Resend (email)
+    Automated follow-up emails at 30 days
+```
+
+---
+
+## Roadmap
+
+| Version | What | Status |
+|---|---|---|
+| v0.1 | Tool + feedback capture | ✅ Done |
+| v0.2 | Supabase persistence | ✅ Done |
+| v0.3 | Pattern aggregation dashboard | ✅ Done |
+| v0.4 | Email capture + 30-day follow-up loop | ✅ Done |
+| v0.5 | Predictive layer | 🔜 Next |
+| v0.6 | Cohort analysis | Planned |
+| v0.7 | Public API | Planned |
+
+---
+
+## Live links
+
+| | URL |
+|---|---|
+| 🔧 Tool | [humanexodus-v01.html](https://shenbrian.github.io/humanexodus/humanexodus-v01.html) |
+| 📊 Patterns | [patterns.html](https://shenbrian.github.io/humanexodus/patterns.html) |
+| 📬 Follow-up | [followup.html](https://shenbrian.github.io/humanexodus/followup.html) |
+
+---
+
+## Contributing
+
+This is an early-stage open-source research project. Contributions are welcome at every layer.
+
+**What we need most right now:**
+
+- More sessions — use the tool, share it with other engineers
+- Exposure engine improvements — better role → exposure mapping
+- Pattern analysis — what signals are emerging from the data?
+- v0.5 design — how should the predictive layer work?
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for full details.
+
+**Ground rules:**
+- No dashboards until the data exists
+- No ML models until patterns are confirmed
+- No user accounts until they're necessary
+- Data discipline first — always
+
+---
+
+## Tech stack
+
+- **Frontend:** Vanilla HTML/CSS/JS — no build step, no framework
+- **Database:** Supabase (Postgres)
+- **AI:** Claude API (Anthropic) for move generation
+- **Email:** Resend
+- **Hosting:** GitHub Pages
+
+---
+
+## License
+
+MIT — use it, fork it, build on it.
+
+---
+
+*HumanExodus is an observation layer, not a prediction engine. The data will tell us what's true. We just have to collect it carefully.*
