@@ -1,0 +1,42 @@
+{
+  "record_id": "HX-000002",
+  "person_id": "PSEUDO-2C9D",
+  "submitted_at": "2026-03-26T15:30:00Z",
+  "entry_type": "initial",
+  "industry": "healthcare",
+  "role_title": "Radiology Registrar",
+  "location_region": "Western Europe",
+  "career_stage": "early",
+  "pressure": {
+    "pressure_type": "scope_reduction",
+    "source": "tool_adoption",
+    "summary": "AI diagnostic tools are being adopted across our department for chest X-ray and CT preliminary reads. The tools are not replacing radiologists yet but they are handling the high-volume routine screening work that registrars use to build pattern recognition. The training pathway is changing under us.",
+    "severity_self_assessed": 3,
+    "time_signal_first_noticed": "2025-09",
+    "confidence_self_assessed": 4
+  },
+  "response": {
+    "response_type": "upskilling",
+    "actions_taken": [
+      "Focused training hours on interventional radiology where AI augmentation is minimal",
+      "Began engaging with the clinical AI validation team to understand model limitations",
+      "Started attending medical AI conferences to position at the clinical-technical interface"
+    ],
+    "response_start_time": "2025-10",
+    "intent": "increase_leverage"
+  },
+  "outcome": {
+    "status": "in_progress",
+    "early_effect": "No direct job threat yet. The concern is about the training quality — if AI handles routine reads, registrars may qualify without developing the foundational pattern recognition that experienced radiologists have. This is a slow-moving structural problem.",
+    "outcome_confidence": 2
+  },
+  "narrative": {
+    "short_context": "I am three years into a seven-year training pathway. The specialty I chose partly because of its technical depth and the intellectual challenge of diagnosis. AI is not eliminating the specialty but it is changing what the hard parts are. I am trying to stay ahead of that shift rather than train for a version of the role that may not exist when I finish.",
+    "path_next_considered": "Specialise in interventional radiology or move toward a hybrid clinical-AI governance role. Both require deliberately building skills the AI cannot replicate."
+  },
+  "meta": {
+    "submission_mode": "manual",
+    "visibility": "public_pseudonymous",
+    "version": "0.1"
+  }
+}

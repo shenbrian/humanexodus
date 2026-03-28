@@ -1,0 +1,42 @@
+{
+  "record_id": "HX-000003",
+  "person_id": "PSEUDO-7K1B",
+  "submitted_at": "2026-03-26T16:45:00Z",
+  "entry_type": "initial",
+  "industry": "software_engineering",
+  "role_title": "Backend Engineer",
+  "location_region": "Southeast Asia",
+  "career_stage": "mid",
+  "pressure": {
+    "pressure_type": "productivity_expectation_shift",
+    "source": "manager_signal",
+    "summary": "Our engineering team adopted AI coding tools company-wide. Output expectations doubled within six months. Engineers who previously shipped one feature per sprint are now expected to ship three. The work is still engineering but the pace and the nature of what counts as skill has changed fundamentally.",
+    "severity_self_assessed": 4,
+    "time_signal_first_noticed": "2025-08",
+    "confidence_self_assessed": 5
+  },
+  "response": {
+    "response_type": "role_shift",
+    "actions_taken": [
+      "Moved from feature engineering into platform engineering — building the infrastructure other engineers use",
+      "Started focusing on system design and architecture rather than implementation",
+      "Began mentoring junior engineers on how to use AI tools effectively — positioning as a force multiplier rather than an individual contributor"
+    ],
+    "response_start_time": "2025-11",
+    "intent": "increase_leverage"
+  },
+  "outcome": {
+    "status": "improved_position",
+    "early_effect": "The move to platform engineering has been positive. The work is less about writing code and more about designing systems that other engineers — including AI-assisted engineers — build within. Salary increased 15% with the role change. The risk feels lower than it did six months ago.",
+    "outcome_confidence": 4
+  },
+  "narrative": {
+    "short_context": "I have seven years as a backend engineer. I was good at implementation. AI made implementation a commodity faster than I expected — not completely, but enough that being fast at writing code stopped being a differentiator. I moved upstream toward the decisions that precede the code. So far this has worked.",
+    "path_next_considered": "Continue building toward a Staff Engineer or Engineering Manager track. Both are roles where the judgment about what to build matters more than the speed of building it."
+  },
+  "meta": {
+    "submission_mode": "manual",
+    "visibility": "public_pseudonymous",
+    "version": "0.1"
+  }
+}

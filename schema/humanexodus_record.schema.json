@@ -1,0 +1,294 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shenbrian/humanexodus/schema/humanexodus_record.schema.json",
+  "title": "HumanExodus Repositioning Record",
+  "description": "A single repositioning event capturing AI-induced pressure, human response, and observed outcome. The atomic unit of the Human Adaptation Graph.",
+  "version": "0.1",
+  "type": "object",
+
+  "required": [
+    "record_id",
+    "person_id",
+    "submitted_at",
+    "entry_type",
+    "industry",
+    "role_title",
+    "career_stage",
+    "pressure",
+    "response",
+    "outcome",
+    "narrative",
+    "meta"
+  ],
+
+  "properties": {
+
+    "record_id": {
+      "type": "string",
+      "description": "Unique identifier for this record. Format: HX-XXXXXX",
+      "pattern": "^HX-[0-9]{6}$",
+      "examples": ["HX-000001"]
+    },
+
+    "person_id": {
+      "type": "string",
+      "description": "Pseudonymous contributor identifier. Never a real name or email.",
+      "pattern": "^PSEUDO-[A-Z0-9]{4}$",
+      "examples": ["PSEUDO-8F3A"]
+    },
+
+    "submitted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO8601 timestamp of submission."
+    },
+
+    "entry_type": {
+      "type": "string",
+      "enum": ["initial", "update", "reflection"],
+      "description": "Whether this is a first submission, an update to a prior record, or a retrospective reflection."
+    },
+
+    "linked_record_id": {
+      "type": "string",
+      "description": "Required for entry_type=update or reflection. References the original record.",
+      "pattern": "^HX-[0-9]{6}$"
+    },
+
+    "industry": {
+      "type": "string",
+      "description": "The industry or sector the contributor operates in.",
+      "examples": [
+        "software_engineering",
+        "management_consulting",
+        "healthcare",
+        "finance",
+        "legal_services",
+        "education",
+        "marketing_advertising",
+        "architecture_design",
+        "journalism_media",
+        "accounting",
+        "logistics",
+        "retail",
+        "manufacturing",
+        "other"
+      ]
+    },
+
+    "role_title": {
+      "type": "string",
+      "description": "The contributor's role title at the time of the pressure signal. Free text — be specific.",
+      "examples": ["Senior Consultant", "Backend Engineer", "Radiology Registrar"]
+    },
+
+    "location_region": {
+      "type": "string",
+      "description": "Optional. Broad geographic region. Not city or employer.",
+      "examples": ["Australia", "Southeast Asia", "Western Europe", "North America"]
+    },
+
+    "career_stage": {
+      "type": "string",
+      "enum": ["early", "mid", "senior", "executive", "founder", "independent", "unknown"],
+      "description": "Self-assessed career stage at time of submission."
+    },
+
+    "pressure": {
+      "type": "object",
+      "description": "The AI-induced pressure perceived or experienced.",
+      "required": [
+        "pressure_type",
+        "summary",
+        "severity_self_assessed",
+        "time_signal_first_noticed"
+      ],
+      "properties": {
+        "pressure_type": {
+          "type": "string",
+          "enum": [
+            "replacement_pressure",
+            "augmentation_pressure",
+            "scope_reduction",
+            "scope_expansion",
+            "skill_obsolescence_signal",
+            "productivity_expectation_shift",
+            "market_demand_shift",
+            "organizational_restructuring",
+            "opportunity_emergence",
+            "unclear"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "enum": [
+            "layoff_event",
+            "manager_signal",
+            "client_behavior",
+            "workflow_change",
+            "tool_adoption",
+            "market_observation",
+            "peer_observation",
+            "self_inference",
+            "public_news",
+            "unclear"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "description": "One to three sentences describing the pressure. Be specific — generic descriptions have low signal value.",
+          "maxLength": 500
+        },
+        "severity_self_assessed": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "1 = minor signal, 5 = existential threat to current role."
+        },
+        "time_signal_first_noticed": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "description": "Month and year the pressure was first noticed. Format: YYYY-MM",
+          "examples": ["2026-02"]
+        },
+        "confidence_self_assessed": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "How confident are you this pressure is real and significant? 1 = uncertain, 5 = highly confident."
+        }
+      }
+    },
+
+    "response": {
+      "type": "object",
+      "description": "The repositioning action taken in response to the pressure.",
+      "required": [
+        "response_type",
+        "actions_taken"
+      ],
+      "properties": {
+        "response_type": {
+          "type": "string",
+          "enum": [
+            "reskilling",
+            "upskilling",
+            "role_shift",
+            "industry_switch",
+            "tool_adoption",
+            "entrepreneurship",
+            "portfolio_career",
+            "wait_and_observe",
+            "resistance",
+            "relocation",
+            "other"
+          ]
+        },
+        "actions_taken": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "Concrete actions taken. Be specific.",
+          "examples": [
+            ["Started using AI tools in project scoping", "Shifted focus toward client-facing synthesis"]
+          ]
+        },
+        "response_start_time": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$",
+          "description": "When the response began. Format: YYYY-MM"
+        },
+        "intent": {
+          "type": "string",
+          "enum": [
+            "preserve_relevance",
+            "increase_leverage",
+            "exit_risk",
+            "explore_opportunity",
+            "reduce_dependency",
+            "unclear"
+          ]
+        }
+      }
+    },
+
+    "outcome": {
+      "type": "object",
+      "description": "The current or final outcome of the repositioning.",
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "in_progress",
+            "stabilized",
+            "improved_position",
+            "role_lost",
+            "role_changed",
+            "income_reduced",
+            "income_improved",
+            "unclear"
+          ]
+        },
+        "early_effect": {
+          "type": "string",
+          "description": "What has happened so far. Optional for initial entries.",
+          "maxLength": 500
+        },
+        "outcome_confidence": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5,
+          "description": "How confident are you in this outcome assessment?"
+        }
+      }
+    },
+
+    "narrative": {
+      "type": "object",
+      "description": "Short contextual framing to help interpret the structured fields.",
+      "required": ["short_context"],
+      "properties": {
+        "short_context": {
+          "type": "string",
+          "description": "Two to four sentences of context. What made this situation specific to you?",
+          "maxLength": 800
+        },
+        "path_next_considered": {
+          "type": "string",
+          "description": "What are you considering doing next? Optional.",
+          "maxLength": 400
+        }
+      }
+    },
+
+    "meta": {
+      "type": "object",
+      "required": ["version"],
+      "properties": {
+        "submission_mode": {
+          "type": "string",
+          "enum": ["tool", "manual", "api"],
+          "description": "How was this record submitted?"
+        },
+        "visibility": {
+          "type": "string",
+          "enum": ["public_pseudonymous", "private"],
+          "default": "public_pseudonymous"
+        },
+        "version": {
+          "type": "string",
+          "description": "Schema version used for this record.",
+          "examples": ["0.1"]
+        }
+      }
+    }
+  },
+
+  "if": {
+    "properties": { "entry_type": { "enum": ["update", "reflection"] } }
+  },
+  "then": {
+    "required": ["linked_record_id"]
+  }
+}

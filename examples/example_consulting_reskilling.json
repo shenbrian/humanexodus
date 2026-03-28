@@ -1,0 +1,42 @@
+{
+  "record_id": "HX-000001",
+  "person_id": "PSEUDO-8F3A",
+  "submitted_at": "2026-03-26T14:00:00Z",
+  "entry_type": "initial",
+  "industry": "management_consulting",
+  "role_title": "Senior Consultant",
+  "location_region": "Australia",
+  "career_stage": "mid",
+  "pressure": {
+    "pressure_type": "augmentation_pressure",
+    "source": "workflow_change",
+    "summary": "AI tools reduced demand for first-draft problem structuring work. Junior analysts are now producing slide-ready outputs in hours that previously took days. The value of mid-level consultants who built careers on structuring ambiguous problems is compressing.",
+    "severity_self_assessed": 4,
+    "time_signal_first_noticed": "2025-11",
+    "confidence_self_assessed": 4
+  },
+  "response": {
+    "response_type": "reskilling",
+    "actions_taken": [
+      "Started using AI tools in project scoping to stay ahead of junior output quality",
+      "Shifted focus toward client-facing synthesis and judgment-heavy deliverables",
+      "Began positioning internally as the person who knows how to direct AI rather than produce with it"
+    ],
+    "response_start_time": "2026-01",
+    "intent": "preserve_relevance"
+  },
+  "outcome": {
+    "status": "in_progress",
+    "early_effect": "Work remains secure but expectations have increased. Clients now expect faster turnaround and higher polish. The role feels sustainable but the margin for error has shrunk.",
+    "outcome_confidence": 3
+  },
+  "narrative": {
+    "short_context": "I have 8 years in consulting. The first 6 were about learning to structure problems. The last 2 have been about learning to direct machines that structure problems. The skill set is shifting faster than I expected and the firm is not formally acknowledging it yet.",
+    "path_next_considered": "Move toward AI-enabled strategy delivery roles — either within consulting or on the client side where I can own the AI transformation rather than support it."
+  },
+  "meta": {
+    "submission_mode": "manual",
+    "visibility": "public_pseudonymous",
+    "version": "0.1"
+  }
+}
