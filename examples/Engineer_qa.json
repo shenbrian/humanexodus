@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000008",
+  "person_id": "PSEUDO-QA08",
+  "submitted_at": "2026-03-28T10:10:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "mid",
+    "title": "QA Engineer",
+    "focus_area": "qa",
+    "years_experience": "4-6"
+  },
+  "stack": {
+    "languages": ["JavaScript"],
+    "frameworks": ["Playwright", "Cypress"],
+    "environment": "enterprise"
+  },
+  "pressure": {
+    "pressure_type": "replacement_pressure",
+    "signals": [
+      "AI generating test cases and test scripts",
+      "Manual exploratory testing perceived as less scalable",
+      "Leadership asking whether QA headcount can be reduced"
+    ],
+    "severity_self_assessed": 5,
+    "time_first_noticed": "2026-01"
+  },
+  "workflow_change": {
+    "before": "Spent large amounts of time writing manual test cases, regression plans, and repetitive validation flows.",
+    "after": "Uses AI to draft tests and edge cases, with more effort going into test strategy, risk framing, and validation of what should be tested.",
+    "ai_tools_used": ["ChatGPT", "GitHub Copilot"]
+  },
+  "response": {
+    "response_type": "reskilling",
+    "actions": [
+      "Shifted focus toward QA strategy and product risk thinking",
+      "Improved automation depth",
+      "Worked more closely with developers on prevention rather than only detection"
+    ],
+    "intent": "preserve_role"
+  },
+  "outcome": {
+    "status": "in_progress",
+    "early_effect": "Low-level testing work feels more threatened, while higher-level quality judgment feels more important.",
+    "confidence": 4
+  },
+  "narrative": {
+    "summary": "AI appears to reduce the scarcity of repetitive QA execution, but not the need for judgment about product risk and testing priorities."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

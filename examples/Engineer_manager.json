@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000009",
+  "person_id": "PSEUDO-EM09",
+  "submitted_at": "2026-03-28T10:20:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "manager",
+    "title": "Engineering Manager",
+    "focus_area": "backend",
+    "years_experience": "9+"
+  },
+  "stack": {
+    "languages": ["Java", "TypeScript"],
+    "frameworks": ["Spring", "React"],
+    "environment": "enterprise"
+  },
+  "pressure": {
+    "pressure_type": "productivity_pressure",
+    "signals": [
+      "Team productivity expectations rising due to AI tooling",
+      "Need to define acceptable AI use in development workflows",
+      "More ambiguity in evaluating engineer performance"
+    ],
+    "severity_self_assessed": 4,
+    "time_first_noticed": "2026-02"
+  },
+  "workflow_change": {
+    "before": "Focused on delivery planning, people management, cross-team coordination, and engineering execution quality.",
+    "after": "Still manages delivery, but now also sets norms for AI tool usage, reviews changed team workflows, and rethinks performance expectations.",
+    "ai_tools_used": ["ChatGPT", "Internal AI Assistant"]
+  },
+  "response": {
+    "response_type": "managerial_transition",
+    "actions": [
+      "Created guidelines for AI-assisted development",
+      "Adjusted review standards and expectations",
+      "Spent more time coaching around judgment and validation"
+    ],
+    "intent": "preserve_role"
+  },
+  "outcome": {
+    "status": "stabilized",
+    "early_effect": "Manager role remains important, but success depends more on governance and judgment calibration than before.",
+    "confidence": 3
+  },
+  "narrative": {
+    "summary": "AI has changed engineering management by making workflow governance and expectation-setting more important than straightforward output tracking."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

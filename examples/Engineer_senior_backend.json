@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000003",
+  "person_id": "PSEUDO-SB03",
+  "submitted_at": "2026-03-28T09:20:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "senior",
+    "title": "Senior Backend Engineer",
+    "focus_area": "backend",
+    "years_experience": "6-8"
+  },
+  "stack": {
+    "languages": ["Go", "Python"],
+    "frameworks": ["gRPC", "Kafka"],
+    "environment": "enterprise"
+  },
+  "pressure": {
+    "pressure_type": "productivity_pressure",
+    "signals": [
+      "Leadership expects faster delivery due to AI tooling",
+      "Routine implementation perceived as less scarce",
+      "More pressure to guide technical direction"
+    ],
+    "severity_self_assessed": 4,
+    "time_first_noticed": "2026-01"
+  },
+  "workflow_change": {
+    "before": "Balanced architecture work with substantial hands-on coding and mentoring.",
+    "after": "Still codes, but more time goes to defining patterns, reviewing AI-assisted output, and making boundary decisions for systems.",
+    "ai_tools_used": ["GitHub Copilot", "Internal AI Assistant"]
+  },
+  "response": {
+    "response_type": "role_shift",
+    "actions": [
+      "Moved focus toward system architecture",
+      "Created guidance for responsible AI-assisted development",
+      "Spent more time mentoring juniors on validation and trade-offs"
+    ],
+    "intent": "increase_leverage"
+  },
+  "outcome": {
+    "status": "stabilized",
+    "early_effect": "Role remains strong, but leverage now depends more on judgment than output volume.",
+    "confidence": 4
+  },
+  "narrative": {
+    "summary": "Seniority feels more valuable when it translates into system judgment. AI seems to reduce the scarcity of routine coding more than the scarcity of architectural thinking."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

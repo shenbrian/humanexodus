@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000001",
+  "person_id": "PSEUDO-JF01",
+  "submitted_at": "2026-03-28T09:00:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "junior",
+    "title": "Frontend Engineer",
+    "focus_area": "frontend",
+    "years_experience": "0-2"
+  },
+  "stack": {
+    "languages": ["JavaScript", "TypeScript"],
+    "frameworks": ["React", "Next.js"],
+    "environment": "startup"
+  },
+  "pressure": {
+    "pressure_type": "replacement_pressure",
+    "signals": [
+      "AI tools generating UI components from prompts",
+      "Reduced need for simple page-building tasks",
+      "Design-to-code workflows becoming faster"
+    ],
+    "severity_self_assessed": 4,
+    "time_first_noticed": "2026-01"
+  },
+  "workflow_change": {
+    "before": "Spent most time building screens, styling components, and wiring basic interactions manually.",
+    "after": "Uses AI to scaffold components and refine styling, with more time spent reviewing output and understanding product intent.",
+    "ai_tools_used": ["GitHub Copilot", "ChatGPT"]
+  },
+  "response": {
+    "response_type": "reskilling",
+    "actions": [
+      "Started learning UX reasoning and interaction patterns",
+      "Focused more on component architecture and state design",
+      "Asked to be included in architecture discussions to build visibility"
+    ],
+    "intent": "preserve_role"
+  },
+  "outcome": {
+    "status": "in_progress",
+    "early_effect": "Basic UI work is faster, but expectations to understand product logic are higher.",
+    "confidence": 3
+  },
+  "narrative": {
+    "summary": "Simple frontend execution feels less differentiating than before. Value seems to be shifting toward judgment about user experience and system behavior."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

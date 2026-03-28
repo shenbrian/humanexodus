@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000006",
+  "person_id": "PSEUDO-ML06",
+  "submitted_at": "2026-03-28T09:50:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "senior",
+    "title": "ML Engineer",
+    "focus_area": "ml",
+    "years_experience": "5-8"
+  },
+  "stack": {
+    "languages": ["Python"],
+    "frameworks": ["PyTorch", "Ray", "FastAPI"],
+    "environment": "cloud"
+  },
+  "pressure": {
+    "pressure_type": "tooling_disruption",
+    "signals": [
+      "Rapid change in models, tooling, and deployment patterns",
+      "More expectation to integrate third-party AI rather than build from scratch",
+      "Shorter cycle between experimentation and product pressure"
+    ],
+    "severity_self_assessed": 3,
+    "time_first_noticed": "2025-11"
+  },
+  "workflow_change": {
+    "before": "Spent more time on custom modeling, experimentation, and pipeline tuning.",
+    "after": "More time is spent on evaluation, integration, orchestration, and selecting between external and internal AI options.",
+    "ai_tools_used": ["ChatGPT", "Cursor", "Weights & Biases Assistant"]
+  },
+  "response": {
+    "response_type": "upskilling",
+    "actions": [
+      "Focused more on evaluation frameworks",
+      "Learned more product integration skills",
+      "Reduced emphasis on building everything from scratch"
+    ],
+    "intent": "preserve_role"
+  },
+  "outcome": {
+    "status": "stabilized",
+    "early_effect": "Role remains valuable, but the shape of expertise is shifting from pure modeling toward applied systems judgment.",
+    "confidence": 4
+  },
+  "narrative": {
+    "summary": "The role is not disappearing, but the center of gravity is moving from model creation alone toward evaluation, selection, and deployment judgment."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

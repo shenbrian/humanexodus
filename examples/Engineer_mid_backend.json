@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000002",
+  "person_id": "PSEUDO-MB02",
+  "submitted_at": "2026-03-28T09:10:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "mid",
+    "title": "Backend Engineer",
+    "focus_area": "backend",
+    "years_experience": "3-5"
+  },
+  "stack": {
+    "languages": ["Python", "TypeScript"],
+    "frameworks": ["FastAPI", "Node.js"],
+    "environment": "cloud"
+  },
+  "pressure": {
+    "pressure_type": "augmentation_pressure",
+    "signals": [
+      "AI-assisted code generation used for endpoints and tests",
+      "Debugging support from AI tools reducing routine effort",
+      "Team expecting faster feature turnaround after AI tool adoption"
+    ],
+    "severity_self_assessed": 4,
+    "time_first_noticed": "2026-02"
+  },
+  "workflow_change": {
+    "before": "Wrote most service logic and tests manually, with debugging done through docs, logs, and team discussion.",
+    "after": "Uses AI for scaffolding endpoints, generating test cases, and exploring likely bug causes before manual verification.",
+    "ai_tools_used": ["GitHub Copilot", "ChatGPT"]
+  },
+  "response": {
+    "response_type": "tool_adoption",
+    "actions": [
+      "Integrated AI into feature scaffolding",
+      "Spent more time on API design and system trade-offs",
+      "Improved code review discipline for AI-generated output"
+    ],
+    "intent": "increase_leverage"
+  },
+  "outcome": {
+    "status": "in_progress",
+    "early_effect": "Routine implementation is faster, but the bar for architecture thinking has risen.",
+    "confidence": 4
+  },
+  "narrative": {
+    "summary": "AI is not replacing backend work directly, but it is compressing routine coding and shifting value upward toward design decisions."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

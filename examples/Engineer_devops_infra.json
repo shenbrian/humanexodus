@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000004",
+  "person_id": "PSEUDO-DI04",
+  "submitted_at": "2026-03-28T09:30:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "mid",
+    "title": "Platform / Infrastructure Engineer",
+    "focus_area": "infra",
+    "years_experience": "4-6"
+  },
+  "stack": {
+    "languages": ["Python", "Bash"],
+    "frameworks": ["Terraform", "Kubernetes"],
+    "environment": "cloud"
+  },
+  "pressure": {
+    "pressure_type": "scope_expansion",
+    "signals": [
+      "Growing internal demand for AI workloads",
+      "Teams asking for GPU, vector, and model-serving infrastructure",
+      "Operational complexity increasing faster than headcount"
+    ],
+    "severity_self_assessed": 3,
+    "time_first_noticed": "2025-12"
+  },
+  "workflow_change": {
+    "before": "Mostly managed CI/CD, cloud infra, observability, and deployment reliability for standard application services.",
+    "after": "Now also supports AI-related infra requests, cost concerns, data pipelines, and experimentation environments.",
+    "ai_tools_used": ["ChatGPT", "Claude"]
+  },
+  "response": {
+    "response_type": "upskilling",
+    "actions": [
+      "Learned more about model serving and GPU infrastructure",
+      "Expanded observability practices for AI systems",
+      "Documented infra patterns for AI workloads"
+    ],
+    "intent": "increase_leverage"
+  },
+  "outcome": {
+    "status": "improved_position",
+    "early_effect": "Role feels more strategically important, though workload has increased.",
+    "confidence": 3
+  },
+  "narrative": {
+    "summary": "AI has increased pressure, but mostly by expanding the surface area of infra work rather than shrinking it."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

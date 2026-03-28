@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000007",
+  "person_id": "PSEUDO-FS07",
+  "submitted_at": "2026-03-28T10:00:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "mid",
+    "title": "Full-stack Engineer",
+    "focus_area": "fullstack",
+    "years_experience": "3-5"
+  },
+  "stack": {
+    "languages": ["TypeScript", "Python"],
+    "frameworks": ["Next.js", "Node.js", "PostgreSQL"],
+    "environment": "startup"
+  },
+  "pressure": {
+    "pressure_type": "augmentation_pressure",
+    "signals": [
+      "AI enabling one engineer to deliver across frontend, backend, and product tasks",
+      "Smaller teams expected to move faster",
+      "Higher pressure to be multi-functional"
+    ],
+    "severity_self_assessed": 5,
+    "time_first_noticed": "2026-02"
+  },
+  "workflow_change": {
+    "before": "Worked across the stack but still relied on separate specialists for some design, copy, and implementation support.",
+    "after": "Uses AI for code scaffolding, copy drafts, SQL help, debugging, and sometimes product planning support.",
+    "ai_tools_used": ["ChatGPT", "GitHub Copilot", "Cursor"]
+  },
+  "response": {
+    "response_type": "tool_adoption",
+    "actions": [
+      "Leaned heavily into AI-assisted workflows",
+      "Expanded scope into product and architecture decisions",
+      "Learned to validate across more domains"
+    ],
+    "intent": "increase_leverage"
+  },
+  "outcome": {
+    "status": "in_progress",
+    "early_effect": "Output increased significantly, but role boundaries became less clear and cognitive load rose.",
+    "confidence": 4
+  },
+  "narrative": {
+    "summary": "AI has made startup engineering more leveraged, but also more compressed. One person can cover more ground, which raises both opportunity and pressure."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

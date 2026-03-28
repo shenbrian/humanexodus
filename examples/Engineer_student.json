@@ -1,0 +1,52 @@
+{
+  "record_id": "HX-SE-000010",
+  "person_id": "PSEUDO-ST10",
+  "submitted_at": "2026-03-28T10:30:00Z",
+  "entry_type": "initial",
+  "role": {
+    "level": "student",
+    "title": "Computer Science Student",
+    "focus_area": "fullstack",
+    "years_experience": "0-1"
+  },
+  "stack": {
+    "languages": ["Python", "JavaScript"],
+    "frameworks": ["React"],
+    "environment": "unknown"
+  },
+  "pressure": {
+    "pressure_type": "hiring_signal_change",
+    "signals": [
+      "Entry-level coding seems easier to automate",
+      "Internship expectations appear higher than before",
+      "Students using AI tools widely, making differentiation harder"
+    ],
+    "severity_self_assessed": 5,
+    "time_first_noticed": "2026-02"
+  },
+  "workflow_change": {
+    "before": "Learned by writing code directly and building projects step by step.",
+    "after": "Uses AI for explanations, debugging help, and scaffolding, but is less sure how to demonstrate independent value.",
+    "ai_tools_used": ["ChatGPT", "GitHub Copilot"]
+  },
+  "response": {
+    "response_type": "upskilling",
+    "actions": [
+      "Focused more on problem understanding than only syntax",
+      "Built projects showing architecture and product thinking",
+      "Tried to learn when not to trust AI-generated code"
+    ],
+    "intent": "avoid_risk"
+  },
+  "outcome": {
+    "status": "in_progress",
+    "early_effect": "Learning feels faster, but standing out feels harder.",
+    "confidence": 4
+  },
+  "narrative": {
+    "summary": "AI helps students build faster, but it also raises the baseline. The challenge now feels less like writing code at all and more like showing judgment, understanding, and originality."
+  },
+  "meta": {
+    "version": "0.2"
+  }
+}

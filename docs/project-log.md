@@ -9,7 +9,7 @@
 **Founder:** Brian Shen (GitHub: shenbrian, Dev.to: shenbrian)
 **Background:** Advertising, not engineering. This is intentional and a strength — the project is about observing human behaviour under technological pressure, not building technology for its own sake.
 **Location:** Sydney, Australia
-**Collaborators:** Built with Claude (Anthropic) across two sessions. Prior design work done with ChatGPT (see Section 10).
+**Collaborators:** Built with Claude (Anthropic) across three sessions. Prior design work done with ChatGPT (see Section 10).
 
 ---
 
@@ -47,79 +47,60 @@ Do not build:
 - User accounts (until necessary)
 - Complex features (until the data demands them)
 
-This principle has been held consistently across all versions. It came from the original investor memo and has been reinforced at every decision point.
+This principle has been held consistently across all versions.
 
 ---
 
 ## 4. Version History and Decisions
 
 ### v0.1 — Tool + Feedback Capture
-**Built:** Single HTML file tool. Engineers input role, experience, stack. Rule-based engine estimates AI exposure (HIGH/MEDIUM/LOW). Claude API generates 3 adjacent moves + 3 time-bound actions. Four next-move buttons capture intended response.
-
-**Key decision:** Hybrid approach — rule-based for exposure (fast, no API cost), Claude API for move suggestions (richer, personalised).
-
-**Key decision:** Console.log only for v0.1. No database yet. Capture structure from Day 1 even before storage exists.
-
-**Delivery:** Single HTML file. No build step. No framework. No dependencies.
+**Built:** Single HTML file tool. Engineers input role, experience, stack. Rule-based engine estimates AI exposure (HIGH/MEDIUM/LOW). Claude API generates 3 adjacent moves + 3 time-bound actions. Four next-move buttons capture intended response. Console.log only.
 
 ### v0.2 — Supabase Persistence
-**Built:** Replaced console.log with Supabase API call. Sessions table created with 6 fields: session_id, role_input, experience_years, tech_stack, exposure_level, selected_next_move.
-
-**Key decision:** Supabase over DigitalOcean or other backends because: free tier, no server to manage, direct API from browser, fastest path to data collection.
-
-**Key decision:** RLS disabled for simplicity at this stage. Data is anonymous — no personal information stored.
-
-**Anon key:** Stored directly in HTML (acceptable because data is public/anonymous and RLS is off by design).
+**Built:** Replaced console.log with Supabase API call. Sessions table with 6 fields. RLS disabled. Anon key stored in HTML.
 
 ### v0.3 — Pattern Aggregation Dashboard
-**Built:** `patterns.html` — reads live from Supabase, shows next-move distribution by exposure level, recent sessions list. Refresh button. No backend required.
-
-**Key decision:** Separate page, not embedded in tool. Keeps tool minimal.
+**Built:** `patterns.html` — reads live from Supabase, shows next-move distribution by exposure level.
 
 ### v0.4 — Email Capture + 30-Day Follow-up Loop
+**Built:** Optional email field, `followup.html`, Supabase Edge Function `send-followups`, daily cron via pg_cron.
+
+### v0.5 — HAG Architecture + Schema v0.1
+**Built:** Repo restructured with HAG folder architecture. `hag-core/graph_schema/HAG-v0.1-spec.md`. `research-notes/HAG-design-thinking.md`. `schema/humanexodus_record.schema.json` (v0.1). Three synthetic example records (consulting, radiology, engineering).
+
+### v0.5 continued — Schema v0.2 + 10 Engineer Example Records (Session 3)
 **Built:**
-- Optional email field added to tool (framed as research participation, not marketing)
-- `followup.html` — engineers land here 30 days later via link in email, report actual outcome
-- Supabase Edge Function `send-followups` — runs daily, finds sessions 30 days old with email, sends follow-up via Resend
-- Daily cron job scheduled via pg_cron in Supabase SQL editor
 
-**Key decision:** Email optional, not required. Framed as: "Get a follow-up in 30 days — see what actually happened to engineers like you."
+**Schema upgrade (v0.2):** Integrated 9 changes from ChatGPT feedback review:
+1. Added `workflow_change` object — `before`, `after`, `ai_tools_used` (most important addition)
+2. Restructured `role` — `level` and `focus_area` as structured enums
+3. Added `stack` as structured object — `languages`, `frameworks`, `environment`
+4. Added `burnout_increase` to `outcome.status`
+5. Added `hiring_signal_change` to `pressure.pressure_type`
+6. Merged career level taxonomy — added `lead`, `independent`, `founder`
+7. Merged `focus_area` taxonomy — added `qa`
+8. Merged `response_type` — added `team_shift`, `managerial_transition`, kept `entrepreneurship`, `portfolio_career`
+9. Merged `outcome.status` — kept `income_reduced`, `income_improved`
 
-**Key decision:** Used Resend (not Mailgun) — simpler, generous free tier, designed for transactional email.
+**10 engineer example records added:**
+- `engineer_junior_frontend.json` — replacement pressure, reskilling
+- `engineer_mid_backend.json` — augmentation pressure, tool adoption
+- `engineer_senior_backend.json` — productivity pressure, role shift (benchmark quality)
+- `engineer_devops_infra.json` — scope expansion, upskilling (fix: intent → increase_leverage)
+- `engineer_data_engineer.json` — opportunity emergence, role shift
+- `engineer_ml_engineer.json` — tooling disruption, upskilling (benchmark quality)
+- `engineer_fullstack_startup.json` — augmentation pressure, tool adoption
+- `engineer_qa.json` — replacement pressure, reskilling (fix: focus_area → qa)
+- `engineer_manager.json` — productivity pressure, managerial transition (fix: pressure_type → productivity_pressure)
+- `engineer_student.json` — hiring signal change, upskilling (best single record in set)
 
-**Key decision:** Follow-up outcome options are richer than initial next-move options: stayed_same, learned_ai, switched_role, still_deciding, role_lost, other.
+**Key decisions from Session 3:**
 
-**Resend from address:** `onboarding@resend.dev` (using Resend's shared domain — no custom domain set up yet)
-
-**Edge function URL:** `https://xsnjqbxarzflxgczaqev.supabase.co/functions/v1/send-followups`
-
-### v0.5 — HAG Architecture + Schema + Examples
-**Built in this session:**
-- Repo restructured with full HAG folder architecture
-- `hag-core/graph_schema/HAG-v0.1-spec.md` — formal HAG specification
-- `research-notes/HAG-design-thinking.md` — design reasoning document
-- `schema/humanexodus_record.schema.json` — formal JSON schema for dataset records
-- Three synthetic example records in `examples/`:
-  - `example_consulting_reskilling.json`
-  - `example_radiology_scope_reduction.json`
-  - `example_engineer_role_shift.json`
-- README fully rewritten with HAG vision, transformation logic, open problems
-- CONTRIBUTING.md written with ground rules and contribution guide
-- `docs/project-log.md` — this file — created for session continuity
-
-**Key decision:** Build architecture and spec first. Build ingestion layer only after sufficient real data exists.
-
-**Key decision:** Do NOT upgrade Supabase schema or tool UI yet — wait for 50+ sessions to avoid mid-stream migration problems.
-
-**Key decision:** ChatGPT prior work reviewed and selectively integrated. Taken: conceptual model, richer schema design, HAG concept, repo architecture, computable metrics, node/edge types, transformation logic. Not taken: PR-based contribution workflow, pseudonymous ID system in tool, salary fields, complex causal scoring.
-
-**Not yet built:**
-- HAG ingestion layer (`hag-core/ingestion/`)
-- Graph construction logic (`hag-core/transition_builder/`)
-- Pressure propagation model (`hag-core/pressure_model/`)
-- Computable metrics (`hag-core/metrics/`)
-- Upgrade of tool UI to richer taxonomy
-- Upgrade of Supabase schema to richer data model
+- `workflow_change` confirmed as the most important field — engineers think in "what changed in my day-to-day work", not abstract AI impact
+- Scope boundary held: engineers are the *entry point*, not the permanent boundary. ChatGPT recommended engineers-only permanently — rejected.
+- Fake hardcoded engine rejected — we have a real engine already live
+- JSON schema validation CLI deferred — data collection is the priority
+- Three original synthetic examples (consulting, radiology, engineering) remain in `examples/` alongside the 10 new engineer records — they demonstrate the broader scope of the project beyond software engineering
 
 ---
 
@@ -128,7 +109,6 @@ This principle has been held consistently across all versions. It came from the 
 ### GitHub
 - **Repo:** https://github.com/shenbrian/humanexodus
 - **Pages:** https://shenbrian.github.io/humanexodus/
-- **Commits:** Clean history. Large file (supabase.tar.gz) removed from history via filter-branch.
 - **Branch:** main only
 
 ### Live URLs
@@ -137,193 +117,165 @@ This principle has been held consistently across all versions. It came from the 
 - Follow-up: https://shenbrian.github.io/humanexodus/followup.html
 
 ### Supabase
-- **Project:** humanexodus
 - **Project ref:** xsnjqbxarzflxgczaqev
 - **URL:** https://xsnjqbxarzflxgczaqev.supabase.co
 - **Region:** Northeast Asia (Tokyo)
-- **Tables:**
-  - `sessions` — main data table, RLS disabled, unrestricted
-  - `follow_ups` — outcome records, RLS disabled, unrestricted
-- **Edge function:** `send-followups` — deployed, running
-- **Secrets set:** RESEND_API_KEY (real key, set via dashboard)
-- **Cron:** Daily at 9am UTC via pg_cron
+- **Tables:** `sessions`, `follow_ups` — both RLS disabled
+- **Edge function:** `send-followups` — deployed, running daily at 9am UTC
+- **Secrets:** RESEND_API_KEY set via dashboard
 
 ### Resend
 - **Account:** shen.baiping@hotmail.com
-- **From address:** onboarding@resend.dev (shared domain)
-- **Purpose:** 30-day follow-up emails only
+- **From:** onboarding@resend.dev
 
 ### Git (local)
-- **Machine:** OWLUME-TP01 (Windows)
-- **User:** Brian-Owlume
-- **Git config name:** shenbrian
-- **Git config email:** shen.baiping@hotmail.com
-- **Local path:** ~/Desktop/humanexodus
-- **Supabase CLI:** installed at ~/bin/supabase (version 2.84.2)
-- **VS Code:** installed and configured as primary editor
-  - Open project: `code ~/Desktop/humanexodus`
-  - Built-in Git panel replaces Git Bash for routine commits
-  - Built-in terminal (Ctrl+`) for command-line work
+- **Path:** ~/Desktop/humanexodus
+- **Editor:** VS Code (primary — use Source Control panel for commits)
+- **Terminal:** Ctrl+` opens terminal inside VS Code
+- **Git config:** name=shenbrian, email=shen.baiping@hotmail.com
+- **Supabase CLI:** ~/bin/supabase (v2.84.2)
 
 ---
 
-## 6. Supabase Schema (Current)
+## 6. Supabase Schema (Current — flat, v0.1)
 
 ### sessions table
 ```
-id                  int8 (primary key, auto)
-created_at          timestamptz (default: now())
-session_id          text
-role_input          text
-experience_years    int8
-tech_stack          text
-exposure_level      text
-selected_next_move  text
-email               text (nullable)
+id, created_at, session_id, role_input, experience_years,
+tech_stack, exposure_level, selected_next_move, email
 ```
 
 ### follow_ups table
 ```
-id              int8 (primary key, auto)
-created_at      timestamptz (default: now())
-session_id      text
-email           text (nullable)
-actual_outcome  text
-notes           text
-follow_up_date  text
+id, created_at, session_id, email, actual_outcome, notes, follow_up_date
 ```
 
----
-
-## 7. Exposure Engine Logic
-
-Rule-based. Lives in `humanexodus-v01.html` in the `computeExposure()` function.
-
-**Logic:**
-1. Check role against LOW_EXPOSURE_ROLES list → return LOW
-2. Check role against HIGH_EXPOSURE_ROLES list → return HIGH
-3. Check role against EXPOSURE_MAP (frontend/backend/fullstack/devops/data/ml/product/mobile/security/embedded) → return mapped level
-4. Apply seniority modifier: 10+ years → -1 level, 2 or fewer years → +1 level
-5. Fallback: check stack against HIGH_RISK_KEYWORDS
-
-**Known limitation:** Simple keyword matching. Will need improvement as data reveals misclassifications.
+**Note:** The Supabase schema is still flat v0.1. The richer schema (v0.2) exists in `schema/humanexodus_record.schema.json` but has NOT been migrated to Supabase yet. Migration deferred until 50+ sessions.
 
 ---
 
-## 8. Key Design Decisions Not Yet Implemented
+## 7. Schema Versions
 
-These were identified and deliberately deferred:
+### schema/humanexodus_record.schema.json — v0.2 (current)
+Full structured schema with `workflow_change`, structured `role`, structured `stack`, all upgraded taxonomies.
 
-1. **Richer next-move taxonomy** — current 4 buttons (stay/learn_ai/switch/not_sure) should eventually become the full response_type vocabulary from the JSON schema. Deferred until 50+ sessions.
-
-2. **Richer Supabase schema** — current flat table should eventually capture pressure_type, response_type, career_stage, severity, confidence. Deferred to avoid mid-stream migration.
-
-3. **Custom email domain** — currently using onboarding@resend.dev. Should eventually use a custom domain for credibility.
-
-4. **Pseudonymous ID system** — the JSON schema supports PSEUDO-XXXX person IDs for longitudinal tracking. Not implemented in the tool yet.
-
-5. **HAG ingestion layer** — the logic that transforms flat session records into graph nodes and edges. The spec exists. The code does not.
+### Supabase sessions table — v0.1 (flat)
+Still uses original 6-field flat structure. Migration pending.
 
 ---
 
-## 9. Distribution Status
+## 8. Exposure Engine Logic (in humanexodus-v01.html)
+
+Rule-based `computeExposure()` function. Maps role keywords to HIGH/MEDIUM/LOW with seniority modifier. Known limitation: simple keyword matching. Needs improvement as data reveals misclassifications.
+
+---
+
+## 9. Key Design Decisions Not Yet Implemented
+
+1. **Richer next-move taxonomy** — current 4 buttons deferred until 50+ sessions
+2. **Supabase schema migration** — deferred until 50+ sessions
+3. **Custom email domain** — currently using onboarding@resend.dev
+4. **HAG ingestion layer** — spec exists, code does not
+5. **JSON schema validation CLI** — deferred, not a priority yet
+
+---
+
+## 10. Distribution Status
 
 | Channel | Status | Handle |
 |---|---|---|
 | GitHub | ✅ Live | github.com/shenbrian/humanexodus |
 | GitHub Pages | ✅ Live | shenbrian.github.io/humanexodus |
 | Dev.to | ✅ Published | dev.to/shenbrian |
-| LinkedIn | ✅ Posted | Personal account (advertising background) |
+| LinkedIn | ✅ Posted | Personal account |
 | Reddit r/SideProject | ✅ Posted | u/Fit-Scholar1879 |
-| Reddit r/cscareerquestions | ⏳ Waiting for karma | u/Fit-Scholar1879 (0 karma) |
+| Reddit r/cscareerquestions | ⏳ Waiting for karma | u/Fit-Scholar1879 |
 | Reddit r/ExperiencedDevs | ⏳ Waiting for karma | u/Fit-Scholar1879 |
 | Hacker News | ⏳ Waiting for karma | u/shenbrian (1 karma) |
 
-**Reddit note:** Account u/Fit-Scholar1879 was pre-existing on the machine (linked to phone number). Need to comment on threads to build karma before posting in large subreddits.
-
-**HN note:** Account u/shenbrian created. Bio set. Need 5-10 karma from commenting before submitting Show HN.
-
-**LinkedIn framing that worked:** "I'm not an engineer. I'm in advertising. I watch how people respond to disruption for a living. So I built a system to watch how engineers respond to AI." Use this framing consistently.
+**LinkedIn framing that works:** "I'm not an engineer. I'm in advertising. I watch how people respond to disruption for a living. So I built a system to watch how engineers respond to AI."
 
 ---
 
-## 10. ChatGPT Prior Work — What Was Taken
+## 11. ChatGPT Prior Work — Integration Status
 
-ChatGPT designed three documents before Brian decided to make the project open source:
+Three design documents reviewed and selectively integrated:
 
-1. **Execution Brief v1** — core purpose, problem statement, conceptual model, project nature
-2. **Dataset v0.1 schema** — detailed record structure, controlled vocabularies, update mechanism, repo structure
-3. **HAG specification** — graph structure, node types, edge types, time model, transformation logic, computable metrics
+**Document 1 — Schema:** workflow_change, structured role, structured stack, burnout_increase, hiring_signal_change → all integrated into schema v0.2
 
-**Taken:** Conceptual model, richer data schema, HAG concept, repo architecture, computable metrics, node/edge types, transformation logic, controlled vocabularies.
+**Document 2 — Debrief:** Dual layer architecture (data/graph + user surface) adopted. Fake hardcoded engine rejected. Engineer-only scope rejected as permanent boundary.
 
-**Not taken:** PR-based contribution workflow, pseudonymous ID system in tool, salary fields, complex causal scoring, reputation systems.
+**Document 3 — 10 Example Records:** All 10 reviewed, 3 fixes applied (record 4 intent, record 8 focus_area, record 9 pressure_type). All 10 committed to examples/.
 
 ---
 
-## 11. How to Update This Log
+## 12. How to Update This Log
 
 At the end of every working session with Claude, ask:
-
 *"Please update the project log with everything we did in this session."*
 
-Claude will write the updated version. Replace `docs/project-log.md` in the repo and push.
+Replace `docs/project-log.md` in the repo and push.
 
 ---
 
-## 12. What to Do Next (Priority Order)
+## 13. What to Do Next (Priority Order)
 
-1. **Build Reddit karma** — comment genuinely on r/cscareerquestions and r/ExperiencedDevs. Post when 20+ karma.
-
-2. **Build HN karma** — comment on Show HN and Ask HN threads. Submit Show HN when 5-10 karma.
-
-3. **Watch for first contributors** — check GitHub Issues and Pull Requests. Respond within 48 hours.
-
-4. **Watch the Supabase table** — when sessions reach 50+, begin designing schema upgrade.
-
-5. **Wait for first follow-up data** — 30 days from first sessions with email. Update patterns.html to show intention vs reality gap.
-
-6. **Build HAG ingestion layer** — when schema upgrade is done and data volume justifies it.
+1. **Build Reddit karma** — comment on r/cscareerquestions, r/ExperiencedDevs. Post when 20+ karma.
+2. **Build HN karma** — comment on Show HN and Ask HN. Submit when 5-10 karma.
+3. **Watch for first contributors** — respond to GitHub Issues/PRs within 48 hours.
+4. **Watch Supabase sessions** — when 50+, design schema migration.
+5. **First follow-up data** — arrives 30 days from first sessions with email.
+6. **HAG ingestion layer** — after schema migration and sufficient data.
 
 ---
 
-## 13. Files in the Repo (Current)
+## 14. Files in the Repo (Current)
 
 ```
 humanexodus/
-├── README.md                              ← Full HAG vision, current state, open problems
-├── CONTRIBUTING.md                        ← Contributor guide, ground rules
-├── LICENSE                                ← MIT
-├── .gitignore                             ← Includes supabase/.temp/
-├── humanexodus-v01.html                   ← Entry tool (v0.4 — includes email field)
-├── patterns.html                          ← Live pattern dashboard
-├── followup.html                          ← 30-day outcome collection page
+├── README.md
+├── CONTRIBUTING.md
+├── LICENSE
+├── .gitignore
+├── humanexodus-v01.html           ← Entry tool (v0.4)
+├── patterns.html                  ← Pattern dashboard
+├── followup.html                  ← 30-day outcome page
 ├── hag-core/
 │   ├── graph_schema/
-│   │   └── HAG-v0.1-spec.md              ← Formal HAG specification
-│   ├── ingestion/.gitkeep                ← Empty — to be built
-│   ├── transition_builder/.gitkeep       ← Empty — to be built
-│   ├── pressure_model/.gitkeep           ← Empty — to be built
-│   ├── metrics/.gitkeep                  ← Empty — to be built
-│   └── tests/.gitkeep                    ← Empty — to be built
+│   │   └── HAG-v0.1-spec.md
+│   ├── ingestion/.gitkeep
+│   ├── transition_builder/.gitkeep
+│   ├── pressure_model/.gitkeep
+│   ├── metrics/.gitkeep
+│   └── tests/.gitkeep
 ├── schema/
-│   └── humanexodus_record.schema.json    ← Formal JSON schema for dataset records
+│   └── humanexodus_record.schema.json   ← v0.2
 ├── examples/
 │   ├── example_consulting_reskilling.json
 │   ├── example_radiology_scope_reduction.json
-│   └── example_engineer_role_shift.json
-├── datasets/.gitkeep                      ← Empty — for real contributed records
+│   ├── example_engineer_role_shift.json
+│   ├── engineer_junior_frontend.json
+│   ├── engineer_mid_backend.json
+│   ├── engineer_senior_backend.json
+│   ├── engineer_devops_infra.json
+│   ├── engineer_data_engineer.json
+│   ├── engineer_ml_engineer.json
+│   ├── engineer_fullstack_startup.json
+│   ├── engineer_qa.json
+│   ├── engineer_manager.json
+│   └── engineer_student.json
+├── datasets/.gitkeep
 ├── research-notes/
-│   └── HAG-design-thinking.md            ← Design reasoning document
+│   └── HAG-design-thinking.md
 ├── docs/
-│   └── project-log.md                    ← This file
+│   └── project-log.md
 └── supabase/
     └── functions/
         └── send-followups/
-            └── index.ts                   ← Daily follow-up email edge function
+            └── index.ts
 ```
 
 ---
 
-*Last updated: March 2026 — Session 2*
+*Last updated: March 2026 — Session 3*
 *Built with Claude (Anthropic) + Brian Shen*
