@@ -761,12 +761,16 @@
               <label for="n4">Learn something new, change direction</label>
             </div>
             <div class="radio-option">
-              <input type="radio" name="next_move" id="n5" value="undecided" />
-              <label for="n5">Honestly no idea yet</label>
+              <input type="radio" name="next_move" id="n5" value="leave_tech" />
+              <label for="n5">Leave tech entirely — trades, healthcare, anything else</label>
             </div>
             <div class="radio-option">
-              <input type="radio" name="next_move" id="n6" value="not_looking" />
-              <label for="n6">Taking time — not ready to look</label>
+              <input type="radio" name="next_move" id="n6" value="undecided" />
+              <label for="n6">Honestly no idea yet</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="next_move" id="n7" value="not_looking" />
+              <label for="n7">Taking time — not ready to look</label>
             </div>
           </div>
         </div>
@@ -814,7 +818,7 @@
   <script>
     // Supabase config — replace with actual keys
     const SUPABASE_URL = 'https://xsnjqbxarzflxgczaqev.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbmpxYnhhcnpmbHhnY3phcWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1OTAxMjEsImV4cCI6MjA5MDE2NjEyMX0.4yDUnjddwnV2Y8stHuXQuwWr4qLP2izLyohX6hztZR4';
+    const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY_HERE';
 
     // Scroll reveal
     const observer = new IntersectionObserver((entries) => {
