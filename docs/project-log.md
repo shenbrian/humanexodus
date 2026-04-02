@@ -7,9 +7,9 @@
 ## 1. Who Built This
 
 **Founder:** Brian Shen (GitHub: shenbrian, Dev.to: shenbrian)
-**Background:** Advertising, not engineering. This is intentional and a strength — the project is about observing human behaviour under technological pressure, not building technology for its own sake.
+**Background:** Not an engineer. This is intentional and a strength — the project is about observing human behaviour under technological pressure, not building technology for its own sake.
 **Location:** Sydney, Australia
-**Collaborators:** Built with Claude (Anthropic) across three sessions. Prior design work done with ChatGPT (see Section 10).
+**Collaborators:** Built with Claude (Anthropic) across five sessions. Prior design work done with ChatGPT (see Section 11).
 
 ---
 
@@ -69,38 +69,10 @@ This principle has been held consistently across all versions.
 **Built:** Repo restructured with HAG folder architecture. `hag-core/graph_schema/HAG-v0.1-spec.md`. `research-notes/HAG-design-thinking.md`. `schema/humanexodus_record.schema.json` (v0.1). Three synthetic example records (consulting, radiology, engineering).
 
 ### v0.5 continued — Schema v0.2 + 10 Engineer Example Records (Session 3)
-**Built:**
+**Built:** Schema upgraded to v0.2 with 9 changes. 10 engineer example records added and committed.
 
-**Schema upgrade (v0.2):** Integrated 9 changes from ChatGPT feedback review:
-1. Added `workflow_change` object — `before`, `after`, `ai_tools_used` (most important addition)
-2. Restructured `role` — `level` and `focus_area` as structured enums
-3. Added `stack` as structured object — `languages`, `frameworks`, `environment`
-4. Added `burnout_increase` to `outcome.status`
-5. Added `hiring_signal_change` to `pressure.pressure_type`
-6. Merged career level taxonomy — added `lead`, `independent`, `founder`
-7. Merged `focus_area` taxonomy — added `qa`
-8. Merged `response_type` — added `team_shift`, `managerial_transition`, kept `entrepreneurship`, `portfolio_career`
-9. Merged `outcome.status` — kept `income_reduced`, `income_improved`
-
-**10 engineer example records added:**
-- `engineer_junior_frontend.json` — replacement pressure, reskilling
-- `engineer_mid_backend.json` — augmentation pressure, tool adoption
-- `engineer_senior_backend.json` — productivity pressure, role shift (benchmark quality)
-- `engineer_devops_infra.json` — scope expansion, upskilling (fix: intent → increase_leverage)
-- `engineer_data_engineer.json` — opportunity emergence, role shift
-- `engineer_ml_engineer.json` — tooling disruption, upskilling (benchmark quality)
-- `engineer_fullstack_startup.json` — augmentation pressure, tool adoption
-- `engineer_qa.json` — replacement pressure, reskilling (fix: focus_area → qa)
-- `engineer_manager.json` — productivity pressure, managerial transition (fix: pressure_type → productivity_pressure)
-- `engineer_student.json` — hiring signal change, upskilling (best single record in set)
-
-**Key decisions from Session 3:**
-
-- `workflow_change` confirmed as the most important field — engineers think in "what changed in my day-to-day work", not abstract AI impact
-- Scope boundary held: engineers are the *entry point*, not the permanent boundary. ChatGPT recommended engineers-only permanently — rejected.
-- Fake hardcoded engine rejected — we have a real engine already live
-- JSON schema validation CLI deferred — data collection is the priority
-- Three original synthetic examples (consulting, radiology, engineering) remain in `examples/` alongside the 10 new engineer records — they demonstrate the broader scope of the project beyond software engineering
+### v0.5 continued — Security Fix (Session 5)
+**Built:** Enabled RLS on both `sessions` and `follow_ups` tables via SQL editor. Added anonymous insert policies to keep tool functional while locking down read access. Verified tool still writes correctly after fix.
 
 ---
 
@@ -120,7 +92,8 @@ This principle has been held consistently across all versions.
 - **Project ref:** xsnjqbxarzflxgczaqev
 - **URL:** https://xsnjqbxarzflxgczaqev.supabase.co
 - **Region:** Northeast Asia (Tokyo)
-- **Tables:** `sessions`, `follow_ups` — both RLS disabled
+- **Tables:** `sessions`, `follow_ups` — RLS now ENABLED (Session 5)
+- **Policies:** Anonymous insert allowed on both tables. Read access locked down.
 - **Edge function:** `send-followups` — deployed, running daily at 9am UTC
 - **Secrets:** RESEND_API_KEY set via dashboard
 
@@ -137,7 +110,7 @@ This principle has been held consistently across all versions.
 
 ---
 
-## 6. Supabase Schema (Current — flat, v0.1)
+## 6. Supabase Schema (Current)
 
 ### sessions table
 ```
@@ -150,7 +123,7 @@ tech_stack, exposure_level, selected_next_move, email
 id, created_at, session_id, email, actual_outcome, notes, follow_up_date
 ```
 
-**Note:** The Supabase schema is still flat v0.1. The richer schema (v0.2) exists in `schema/humanexodus_record.schema.json` but has NOT been migrated to Supabase yet. Migration deferred until 50+ sessions.
+**Note:** The Supabase schema is still flat v0.1. The richer schema (v0.2) exists in `schema/humanexodus_record.schema.json` but has NOT been migrated to Supabase yet. Migration deferred until 50+ sessions. As of Session 5, there are 11 rows in sessions (mostly test data from March 27) plus 1 verified post-RLS write.
 
 ---
 
@@ -177,6 +150,7 @@ Rule-based `computeExposure()` function. Maps role keywords to HIGH/MEDIUM/LOW w
 3. **Custom email domain** — currently using onboarding@resend.dev
 4. **HAG ingestion layer** — spec exists, code does not
 5. **JSON schema validation CLI** — deferred, not a priority yet
+6. **Open source governance structure** — decided to open source; governance model not yet defined
 
 ---
 
@@ -186,50 +160,73 @@ Rule-based `computeExposure()` function. Maps role keywords to HIGH/MEDIUM/LOW w
 |---|---|---|
 | GitHub | ✅ Live | github.com/shenbrian/humanexodus |
 | GitHub Pages | ✅ Live | shenbrian.github.io/humanexodus |
-| Dev.to | ✅ Published | dev.to/shenbrian |
-| LinkedIn | ✅ Posted | Personal account |
-| Reddit r/SideProject | ✅ Posted | u/Fit-Scholar1879 |
-| Reddit r/cscareerquestions | ⏳ Waiting for karma | u/Fit-Scholar1879 |
-| Reddit r/ExperiencedDevs | ⏳ Waiting for karma | u/Fit-Scholar1879 |
-| Hacker News | ⏳ Waiting for karma | u/shenbrian (1 karma) |
+| Dev.to | ✅ 2 posts published | dev.to/shenbrian |
+| LinkedIn | ✅ 2 posts live, 90+ impressions | Personal account |
+| Reddit r/SideProject | ❌ Removed by spam filter | u/Fit-Scholar1879 |
+| Reddit r/cscareerquestions | ⚠️ Rule 6 — AI comments forbidden | u/Fit-Scholar1879 |
+| Reddit r/ExperiencedDevs | ✅ 1 comment posted, 1 upvote | u/Fit-Scholar1879 |
+| Hacker News | ⏳ 1 karma, 1 comment posted | u/shenbrian |
 
-**LinkedIn framing that works:** "I'm not an engineer. I'm in advertising. I watch how people respond to disruption for a living. So I built a system to watch how engineers respond to AI."
+**Reddit karma status (u/Fit-Scholar1879):** 1 post karma, 0 comment karma. Target: 20+ comment karma before reposting project. Approx 10-15 more quality comments needed.
+
+**Important:** r/cscareerquestions has Rule 6 — AI use in comments is forbidden. Do not comment there.
+
+**LinkedIn framing that works:** "I'm not an engineer. I watch how people respond to disruption for a living. So I built a system to watch how engineers respond to AI."
+
+**Dev.to posts:**
+1. "I built an open-source system to track how engineers actually adapt to AI" — Mar 28, 1 reaction
+2. "HumanExodus: Why I'm Building Measurement Infrastructure for the Largest Labour Transition in History" — Mar 29, methodology essay
 
 ---
 
 ## 11. ChatGPT Prior Work — Integration Status
 
-Three design documents reviewed and selectively integrated:
-
-**Document 1 — Schema:** workflow_change, structured role, structured stack, burnout_increase, hiring_signal_change → all integrated into schema v0.2
-
-**Document 2 — Debrief:** Dual layer architecture (data/graph + user surface) adopted. Fake hardcoded engine rejected. Engineer-only scope rejected as permanent boundary.
-
-**Document 3 — 10 Example Records:** All 10 reviewed, 3 fixes applied (record 4 intent, record 8 focus_area, record 9 pressure_type). All 10 committed to examples/.
+Three design documents reviewed and selectively integrated. Full details in Session 3 log.
 
 ---
 
-## 12. How to Update This Log
+## 12. Open Source Decision (Session 4)
 
-At the end of every working session with Claude, ask:
-*"Please update the project log with everything we did in this session."*
+**Decision:** HumanExodus will be open source.
 
-Replace `docs/project-log.md` in the repo and push.
+**Fear addressed:** Brian expressed concern that tech-savvy teams could grab the idea and execute faster. Resolved by recognising that the asset is not the code — it's the framing, the longitudinal methodology, the data discipline, and the public intellectual authorship. The methodology essay establishes priority in a way a GitHub repo alone cannot.
 
----
-
-## 13. What to Do Next (Priority Order)
-
-1. **Build Reddit karma** — comment on r/cscareerquestions, r/ExperiencedDevs. Post when 20+ karma.
-2. **Build HN karma** — comment on Show HN and Ask HN. Submit when 5-10 karma.
-3. **Watch for first contributors** — respond to GitHub Issues/PRs within 48 hours.
-4. **Watch Supabase sessions** — when 50+, design schema migration.
-5. **First follow-up data** — arrives 30 days from first sessions with email.
-6. **HAG ingestion layer** — after schema migration and sufficient data.
+**Governance:** Not yet defined. Key question is what contributors can touch — schema needs tight control, example records could be open, tool is lower stakes.
 
 ---
 
-## 14. Files in the Repo (Current)
+## 13. Outreach Status
+
+**Brijesh Pandya** (Senior GRC & Risk Leader, National Cyber Security Research Council) — LinkedIn DM sent Session 4. Commented: *"Data-driven insight beats speculative opinion every time - observing the delta between intention and action is where the real truth about our industry's future lies."* Awaiting response.
+
+---
+
+## 14. Session Log Summary
+
+| Session | Date | Key Work |
+|---|---|---|
+| 1 | Mar 2026 | v0.1 tool built, Supabase persistence |
+| 2 | Mar 2026 | Pattern dashboard, email follow-up loop |
+| 3 | Mar 2026 | HAG architecture, schema v0.2, 10 example records |
+| 4 | Mar 29, 2026 | Methodology essay, Brijesh outreach, HN comment |
+| 5 | Apr 2, 2026 | RLS security fix, Reddit karma building started |
+
+---
+
+## 15. What to Do Next (Priority Order)
+
+1. **Build Reddit karma** — 2-3 comments per day on r/ExperiencedDevs. Target 20+ comment karma before reposting project. Space comments out naturally.
+2. **Wait on Brijesh** — respond within 24 hours if he replies
+3. **Check HN comment** — respond to any replies, build karma toward 5-10
+4. **Watch Dev.to and LinkedIn** — check every 2-3 days for traction
+5. **Watch Supabase sessions** — when 50+, design schema migration
+6. **First follow-up data** — arrives 30 days from first sessions with email
+7. **Define open source governance** — what can contributors touch?
+8. **HAG ingestion layer** — after schema migration and sufficient data
+
+---
+
+## 16. Files in the Repo (Current)
 
 ```
 humanexodus/
@@ -237,9 +234,9 @@ humanexodus/
 ├── CONTRIBUTING.md
 ├── LICENSE
 ├── .gitignore
-├── humanexodus-v01.html           ← Entry tool (v0.4)
-├── patterns.html                  ← Pattern dashboard
-├── followup.html                  ← 30-day outcome page
+├── humanexodus-v01.html
+├── patterns.html
+├── followup.html
 ├── hag-core/
 │   ├── graph_schema/
 │   │   └── HAG-v0.1-spec.md
@@ -249,7 +246,7 @@ humanexodus/
 │   ├── metrics/.gitkeep
 │   └── tests/.gitkeep
 ├── schema/
-│   └── humanexodus_record.schema.json   ← v0.2
+│   └── humanexodus_record.schema.json
 ├── examples/
 │   ├── example_consulting_reskilling.json
 │   ├── example_radiology_scope_reduction.json
@@ -277,5 +274,5 @@ humanexodus/
 
 ---
 
-*Last updated: March 2026 — Session 3*
+*Last updated: April 2, 2026 — Session 5*
 *Built with Claude (Anthropic) + Brian Shen*

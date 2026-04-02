@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're still going somewhere — HumanExodus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #0e0e0e;
+      --surface: #161616;
+      --border: #2a2a2a;
+      --text: #e8e4dc;
+      --muted: #7a7570;
+      --accent: #c9a96e;
+      --accent-dim: rgba(201, 169, 110, 0.12);
+      --red: #c96e6e;
+      --green: #6ec98a;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: rgba(14,14,14,0.85);
+      backdrop-filter: blur(12px);
+    }
+
+    .nav-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-decoration: none;
+    }
+
+    .nav-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 2rem 4rem;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .hero-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.2s;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.4s;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--muted);
+      max-width: 560px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 0.6s;
+    }
+
+    .hero-sub strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    .scroll-cue {
+      margin-top: 4rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 1s;
+    }
+
+    .scroll-line {
+      width: 40px;
+      height: 1px;
+      background: var(--accent);
+      animation: expandLine 1.2s ease forwards 1.2s;
+      transform-origin: left;
+      transform: scaleX(0);
+    }
+
+    .scroll-text {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    @keyframes expandLine {
+      to { transform: scaleX(1); }
+    }
+
+    /* Data pulse strip */
+    .pulse-strip {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 1.2rem 2rem;
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      overflow: hidden;
+    }
+
+    .pulse-strip::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 60%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(201,169,110,0.04), transparent);
+      animation: shimmer 3s ease infinite;
+    }
+
+    @keyframes shimmer {
+      to { left: 200%; }
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--accent);
+      display: block;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.3rem;
+      display: block;
+    }
+
+    /* Sections */
+    section {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 400;
+      line-height: 1.25;
+      margin-bottom: 1.5rem;
+    }
+
+    h2 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.85;
+      max-width: 580px;
+      margin-bottom: 1.2rem;
+    }
+
+    p strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    /* Truth cards */
+    .truths {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    .truth-card {
+      background: var(--surface);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s ease;
+    }
+
+    .truth-card:hover {
+      background: #1a1a1a;
+    }
+
+    .truth-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 2px;
+      height: 0;
+      background: var(--accent);
+      transition: height 0.4s ease;
+    }
+
+    .truth-card:hover::before {
+      height: 100%;
+    }
+
+    .truth-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--accent);
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .truth-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.6rem;
+      line-height: 1.35;
+    }
+
+    .truth-card p {
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    /* Form section */
+    .form-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 3rem;
+      margin-top: 2rem;
+    }
+
+    .form-intro {
+      margin-bottom: 2.5rem;
+    }
+
+    .form-intro p {
+      font-size: 0.95rem;
+    }
+
+    .field-group {
+      margin-bottom: 1.8rem;
+    }
+
+    label {
+      display: block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 300;
+      padding: 0.85rem 1rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+      appearance: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #3a3a3a;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .radio-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.6rem;
+    }
+
+    .radio-option {
+      position: relative;
+    }
+
+    .radio-option input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+    }
+
+    .radio-option label {
+      display: block;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: var(--muted);
+      text-transform: none;
+      letter-spacing: 0;
+      transition: all 0.2s ease;
+      background: var(--bg);
+    }
+
+    .radio-option input[type="radio"]:checked + label {
+      border-color: var(--accent);
+      color: var(--text);
+      background: var(--accent-dim);
+    }
+
+    .radio-option label:hover {
+      border-color: #444;
+      color: var(--text);
+    }
+
+    .submit-btn {
+      margin-top: 2rem;
+      width: 100%;
+      padding: 1.1rem;
+      background: var(--accent);
+      color: #0e0e0e;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+
+    .submit-btn:hover {
+      opacity: 0.85;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .form-note {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Testimonials / Paths found */
+    .paths-grid {
+      display: grid;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-top: 3rem;
+    }
+
+    .path-card {
+      background: var(--surface);
+      padding: 2rem;
+    }
+
+    .path-before {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--red);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .path-after {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--green);
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .path-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--text);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .path-meta {
+      margin-top: 1rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    .footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    .footer-right a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Success state */
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 3rem;
+    }
+
+    .success-state.visible {
+      display: block;
+    }
+
+    .success-icon {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .success-state h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin-bottom: 1rem;
+    }
+
+    .success-state p {
+      font-size: 0.9rem;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .truths { grid-template-columns: 1fr; }
+      .radio-group { grid-template-columns: 1fr; }
+      .form-section { padding: 2rem 1.5rem; }
+      footer { flex-direction: column; }
+      .pulse-strip { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a class="nav-logo" href="index.html">HUMANEXODUS</a>
+    <span class="nav-tag">open dataset project</span>
+  </nav>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-label">hey — this one's for you</div>
+    <h1>That was a gut punch.<br>And you're <em>still here.</em></h1>
+    <p class="hero-sub">
+      If you just got laid off — or you can feel it coming — I'm not going to tell you it's fine. It's not fine. It's disorienting and unfair and the timing is always wrong.<br><br>
+      But I've been watching what happens next. And I want to show you what I've seen. <strong>People find the way through. Every time.</strong>
+    </p>
+    <div class="scroll-cue">
+      <div class="scroll-line"></div>
+      <span class="scroll-text">Here's what I know</span>
+    </div>
+  </div>
+
+  <!-- Pulse strip -->
+  <div class="pulse-strip">
+    <div class="stat">
+      <span class="stat-num" id="counter-layoffs">30,000+</span>
+      <span class="stat-label">people hit this week. you're not alone in this.</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">~18%</span>
+      <span class="stat-label">of one company. gone overnight.</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">01</span>
+      <span class="stat-label">of several waves. this isn't the last.</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num" id="live-count">—</span>
+      <span class="stat-label">people who've told us what they're doing next</span>
+    </div>
+  </div>
+
+  <!-- What we know -->
+  <section class="reveal">
+    <div class="section-label">What I've seen in the data</div>
+    <h2>People move. <em>Always.</em></h2>
+    <p>
+      I know that sounds like something someone says to make you feel better. I'm not trying to do that. I'm trying to show you the actual pattern.
+    </p>
+    <p>
+      Every wave of displacement — tech, manufacturing, finance, doesn't matter — looks at the moment it happens like an ending. The data shows it isn't. <strong>People reposition. Not all at once, not without pain, but they move.</strong> I've been building a system to track exactly how.
+    </p>
+
+    <div class="truths">
+      <div class="truth-card">
+        <div class="truth-num">01 —</div>
+        <h3>What you say you'll do and what you do are different things</h3>
+        <p>That's not a criticism — it's just true for everyone. The gap between intention and action is where the interesting stuff lives. We track both, 30 days apart.</p>
+      </div>
+      <div class="truth-card">
+        <div class="truth-num">02 —</div>
+        <h3>The headlines are lying about the timeline</h3>
+        <p>Disruption moves slower than the articles say and faster than you think you have time for. You probably have more runway than you feel right now.</p>
+      </div>
+      <div class="truth-card">
+        <div class="truth-num">03 —</div>
+        <h3>Sideways beats starting over</h3>
+        <p>The people I've tracked who land well mostly go sideways, not back to zero. Same domain, shifted function. Your existing knowledge isn't the liability — it's the asset.</p>
+      </div>
+      <div class="truth-card">
+        <div class="truth-num">04 —</div>
+        <h3>The first 90 days matter more than the decision</h3>
+        <p>Not because you need a plan. Because small moves in the first 90 days tend to compound. In either direction. Just keep moving.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- Paths found — example records -->
+  <section class="reveal">
+    <div class="section-label">From the dataset</div>
+    <h2>Some of the people <em>who got through</em></h2>
+    <p>These are real repositioning patterns from the HumanExodus dataset. No names, no company details — just what happened, in their words.</p>
+
+    <div class="paths-grid">
+      <div class="path-card">
+        <div class="path-before">BEFORE — Senior Backend Engineer, 9 yrs</div>
+        <div class="path-after">14 months later — Engineering Lead, AI-tooling team</div>
+        <p class="path-text">"I didn't retrain. I redirected. The same instincts that made me good at systems design made me useful in a room where nobody could evaluate the systems yet."</p>
+        <div class="path-meta">went sideways, then up · pressure: AI automation of core stack</div>
+      </div>
+      <div class="path-card">
+        <div class="path-before">BEFORE — Data Engineer, 6 yrs, fintech</div>
+        <div class="path-after">8 months later — independent, 3 clients</div>
+        <p class="path-text">"The company automated what I built. I thought that was the end. It turned out I knew more about what the automation couldn't do than anyone else in the room."</p>
+        <div class="path-meta">went independent · pressure: pipeline automation</div>
+      </div>
+      <div class="path-card">
+        <div class="path-before">BEFORE — QA Engineer, 11 yrs</div>
+        <div class="path-after">20 months later — Product Manager, enterprise SaaS</div>
+        <p class="path-text">"QA is fundamentally about understanding failure modes. AI doesn't change that. It just changes who needs to hear the answer."</p>
+        <div class="path-meta">domain transfer · pressure: AI-assisted testing tools</div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- The form -->
+  <section class="reveal">
+    <div class="section-label">Tell us where you are</div>
+    <h2>You don't have to have it <em>figured out.</em></h2>
+
+    <div class="form-section">
+      <div class="form-intro">
+        <p>Seriously. "I have no idea what I'm doing next" is a valid answer and an important data point. We're not collecting success stories — we're collecting the honest moment before the story starts.</p>
+        <p>Takes about 3 minutes. Leave your email and we'll check back in 30 days — not to sell you anything, just to see where the path took you. That follow-up is the data point that matters most.</p>
+      </div>
+
+      <div id="form-area">
+        <div class="field-group">
+          <label for="role">What was your role?</label>
+          <input type="text" id="role" placeholder="e.g. Senior Software Engineer, Data Analyst, PM..." />
+        </div>
+
+        <div class="field-group">
+          <label for="years">How long were you in this role / industry?</label>
+          <input type="text" id="years" placeholder="e.g. 7 years" />
+        </div>
+
+        <div class="field-group">
+          <label>What happened?</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="pressure" id="p1" value="layoff_ai" />
+              <label for="p1">Laid off — AI cited as reason</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="pressure" id="p2" value="layoff_restructure" />
+              <label for="p2">Laid off — restructure / cost cut</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="pressure" id="p3" value="role_changed" />
+              <label for="p3">My role quietly changed under me</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="pressure" id="p4" value="leaving_proactively" />
+              <label for="p4">I'm leaving before it happens</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>What are you thinking about doing next?</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <input type="radio" name="next_move" id="n1" value="same_role_new_company" />
+              <label for="n1">Same role, different company</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="next_move" id="n2" value="adjacent_pivot" />
+              <label for="n2">Something adjacent — shifted direction</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="next_move" id="n3" value="freelance_consulting" />
+              <label for="n3">Go freelance / consulting</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="next_move" id="n4" value="reskilling" />
+              <label for="n4">Learn something new, change direction</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="next_move" id="n5" value="undecided" />
+              <label for="n5">Honestly no idea yet</label>
+            </div>
+            <div class="radio-option">
+              <input type="radio" name="next_move" id="n6" value="not_looking" />
+              <label for="n6">Taking time — not ready to look</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label for="voice">Anything you want to say — just say it</label>
+          <textarea id="voice" placeholder="What's going through your head right now? What are you worried about? What do you still believe in? What are you angry about? This goes into the record exactly as you write it."></textarea>
+        </div>
+
+        <div class="field-group">
+          <label for="email">Your email — for the 30-day check-in</label>
+          <input type="email" id="email" placeholder="Optional. We'll ask where things went. That's it." />
+        </div>
+
+        <button class="submit-btn" id="submit-btn" onclick="submitRecord()">I'm in the dataset</button>
+        <p class="form-note">
+          Open dataset. No accounts. No ads. No tracking beyond what you give us here. Your email is only ever used for the 30-day check-in — never shared, never sold.
+        </p>
+      </div>
+
+      <div class="success-state" id="success-state">
+        <div class="success-icon">◆</div>
+        <h3>You're in the record.</h3>
+        <p style="color: var(--muted); margin-top: 0.5rem;">
+          That's the starting point. In 30 days, if you left an email, we'll ask where things went. No judgment either way — the honest answer is the useful one.
+        </p>
+        <p style="margin-top: 1.5rem; color: var(--muted);">
+          And for what it's worth — the fact that you're naming this, right now, while it still hurts? That's already movement.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-left">
+      HumanExodus — open dataset project<br>
+      Tracking how people actually move through AI-driven displacement.
+    </div>
+    <div class="footer-right">
+      <a href="https://github.com/shenbrian/humanexodus" target="_blank">github ↗</a>
+    </div>
+  </footer>
+
+  <script>
+    // Supabase config — replace with actual keys
+    const SUPABASE_URL = 'https://xsnjqbxarzflxgczaqev.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzbmpxYnhhcnpmbHhnY3phcWV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1OTAxMjEsImV4cCI6MjA5MDE2NjEyMX0.4yDUnjddwnV2Y8stHuXQuwWr4qLP2izLyohX6hztZR4';
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(el => {
+        if (el.isIntersecting) {
+          el.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Live count from Supabase
+    async function fetchCount() {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/sessions?select=id`, {
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Prefer': 'count=exact',
+            'Range': '0-0'
+          }
+        });
+        const range = res.headers.get('content-range');
+        if (range) {
+          const total = range.split('/')[1];
+          document.getElementById('live-count').textContent = total !== '*' ? total : '—';
+        }
+      } catch (e) {
+        document.getElementById('live-count').textContent = '—';
+      }
+    }
+
+    fetchCount();
+
+    // Submit
+    async function submitRecord() {
+      const role = document.getElementById('role').value.trim();
+      const years = document.getElementById('years').value.trim();
+      const pressure = document.querySelector('input[name="pressure"]:checked')?.value;
+      const nextMove = document.querySelector('input[name="next_move"]:checked')?.value;
+      const voice = document.getElementById('voice').value.trim();
+      const email = document.getElementById('email').value.trim();
+
+      if (!role || !pressure || !nextMove) {
+        alert('Please fill in your role, what happened, and what you\'re considering next.');
+        return;
+      }
+
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Recording...';
+
+      const sessionId = crypto.randomUUID();
+
+      const payload = {
+        session_id: sessionId,
+        role_input: role,
+        experience_years: parseInt(years) || null,
+        tech_stack: pressure,           // reusing field for pressure type
+        exposure_level: 'DISPLACED',
+        selected_next_move: nextMove,
+        email: email || null
+      };
+
+      try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/sessions`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok || res.status === 201) {
+          document.getElementById('form-area').style.display = 'none';
+          document.getElementById('success-state').classList.add('visible');
+        } else {
+          throw new Error('Write failed');
+        }
+      } catch (e) {
+        btn.disabled = false;
+        btn.textContent = 'Record my position';
+        alert('Something went wrong. Please try again.');
+      }
+    }
+  </script>
+
+</body>
+</html>
