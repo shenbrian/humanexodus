@@ -9,7 +9,7 @@
 **Founder:** Brian Shen (GitHub: shenbrian, Dev.to: shenbrian)
 **Background:** Not an engineer. This is intentional and a strength — the project is about observing human behaviour under technological pressure, not building technology for its own sake.
 **Location:** Sydney, Australia
-**Collaborators:** Built with Claude (Anthropic) across five sessions. Prior design work done with ChatGPT (see Section 11).
+**Collaborators:** Built with Claude (Anthropic) across six sessions. Prior design work done with ChatGPT (see Section 11).
 
 ---
 
@@ -34,6 +34,7 @@ AI-Induced Pressure → Human Repositioning → Observed Outcome
 **What it IS:**
 - Measurement infrastructure for one of the largest labour transitions in history
 - The first attempt to build structured longitudinal data on human career adaptation under AI
+- A place for people in active displacement to record where they are and find that others have found the way through
 
 ---
 
@@ -74,6 +75,11 @@ This principle has been held consistently across all versions.
 ### v0.5 continued — Security Fix (Session 5)
 **Built:** Enabled RLS on both `sessions` and `follow_ups` tables via SQL editor. Added anonymous insert policies to keep tool functional while locking down read access. Verified tool still writes correctly after fix.
 
+### v0.6 — Displacement Page (Session 6)
+**Built:** `displacement.html` — a peer-voiced landing page for people in active displacement. Triggered by Oracle laying off 30,000 employees (18% of global workforce) on April 2, 2026. Framed broadly — not Oracle-specific, for anyone hit by large-scale AI-driven displacement. Feeds into existing `sessions` table via Supabase. 30-day follow-up loop picks up anyone who leaves an email. Tone: one engineer writing to another, not corporate, not a pitch.
+
+**Key directional decision:** HumanExodus is not just measurement infrastructure — it is also a place where people in displacement can feel that paths forward exist. The data serves them, not just the project.
+
 ---
 
 ## 5. Infrastructure
@@ -87,6 +93,7 @@ This principle has been held consistently across all versions.
 - Tool: https://shenbrian.github.io/humanexodus/humanexodus-v01.html
 - Patterns: https://shenbrian.github.io/humanexodus/patterns.html
 - Follow-up: https://shenbrian.github.io/humanexodus/followup.html
+- Displacement: https://shenbrian.github.io/humanexodus/displacement.html *(new — Session 6)*
 
 ### Supabase
 - **Project ref:** xsnjqbxarzflxgczaqev
@@ -125,6 +132,8 @@ id, created_at, session_id, email, actual_outcome, notes, follow_up_date
 
 **Note:** The Supabase schema is still flat v0.1. The richer schema (v0.2) exists in `schema/humanexodus_record.schema.json` but has NOT been migrated to Supabase yet. Migration deferred until 50+ sessions. As of Session 5, there are 11 rows in sessions (mostly test data from March 27) plus 1 verified post-RLS write.
 
+**displacement.html schema note:** The page reuses the existing `sessions` table, mapping the `tech_stack` field to pressure type and setting `exposure_level` to `DISPLACED`. This is a known hack — to be cleaned up during schema migration.
+
 ---
 
 ## 7. Schema Versions
@@ -151,6 +160,7 @@ Rule-based `computeExposure()` function. Maps role keywords to HIGH/MEDIUM/LOW w
 4. **HAG ingestion layer** — spec exists, code does not
 5. **JSON schema validation CLI** — deferred, not a priority yet
 6. **Open source governance structure** — decided to open source; governance model not yet defined
+7. **displacement.html schema cleanup** — `tech_stack` field reused for pressure type; needs proper field at migration
 
 ---
 
@@ -161,7 +171,7 @@ Rule-based `computeExposure()` function. Maps role keywords to HIGH/MEDIUM/LOW w
 | GitHub | ✅ Live | github.com/shenbrian/humanexodus |
 | GitHub Pages | ✅ Live | shenbrian.github.io/humanexodus |
 | Dev.to | ✅ 2 posts published | dev.to/shenbrian |
-| LinkedIn | ✅ 2 posts live, 90+ impressions | Personal account |
+| LinkedIn | ✅ 3 posts live | Personal account |
 | Reddit r/SideProject | ❌ Removed by spam filter | u/Fit-Scholar1879 |
 | Reddit r/cscareerquestions | ⚠️ Rule 6 — AI comments forbidden | u/Fit-Scholar1879 |
 | Reddit r/ExperiencedDevs | ✅ 1 comment posted, 1 upvote | u/Fit-Scholar1879 |
@@ -172,6 +182,8 @@ Rule-based `computeExposure()` function. Maps role keywords to HIGH/MEDIUM/LOW w
 **Important:** r/cscareerquestions has Rule 6 — AI use in comments is forbidden. Do not comment there.
 
 **LinkedIn framing that works:** "I'm not an engineer. I watch how people respond to disruption for a living. So I built a system to watch how engineers respond to AI."
+
+**LinkedIn post that worked (Session 6):** Empathy-first, Oracle layoff trigger. Key line: "what you do next matters more than what just happened to you." Tone: peer, not founder. No data framing in the opening.
 
 **Dev.to posts:**
 1. "I built an open-source system to track how engineers actually adapt to AI" — Mar 28, 1 reaction
@@ -210,19 +222,22 @@ Three design documents reviewed and selectively integrated. Full details in Sess
 | 3 | Mar 2026 | HAG architecture, schema v0.2, 10 example records |
 | 4 | Mar 29, 2026 | Methodology essay, Brijesh outreach, HN comment |
 | 5 | Apr 2, 2026 | RLS security fix, Reddit karma building started |
+| 6 | Apr 2, 2026 | displacement.html built and deployed; LinkedIn post published; directional expansion — HumanExodus now also a space for people in active displacement |
 
 ---
 
 ## 15. What to Do Next (Priority Order)
 
-1. **Build Reddit karma** — 2-3 comments per day on r/ExperiencedDevs. Target 20+ comment karma before reposting project. Space comments out naturally.
-2. **Wait on Brijesh** — respond within 24 hours if he replies
-3. **Check HN comment** — respond to any replies, build karma toward 5-10
-4. **Watch Dev.to and LinkedIn** — check every 2-3 days for traction
-5. **Watch Supabase sessions** — when 50+, design schema migration
-6. **First follow-up data** — arrives 30 days from first sessions with email
-7. **Define open source governance** — what can contributors touch?
-8. **HAG ingestion layer** — after schema migration and sufficient data
+1. **Watch LinkedIn post engagement** — if anyone comments with their story, reply personally, as the person who wrote the post, not as a founder. Check in 24 hours.
+2. **Share displacement.html on Reddit** — drop the link as a comment on any layoff-adjacent thread in r/ExperiencedDevs. Don't pitch the project, just say "built this for anyone going through it."
+3. **Build Reddit karma** — 2-3 comments per day on r/ExperiencedDevs. Target 20+ comment karma before reposting project. Space comments out naturally.
+4. **Wait on Brijesh** — respond within 24 hours if he replies
+5. **Check HN comment** — respond to any replies, build karma toward 5-10
+6. **Watch Dev.to and LinkedIn** — check every 2-3 days for traction
+7. **Watch Supabase sessions** — when 50+, design schema migration (includes cleaning up displacement.html field mapping)
+8. **First follow-up data** — arrives 30 days from first sessions with email
+9. **Define open source governance** — what can contributors touch?
+10. **HAG ingestion layer** — after schema migration and sufficient data
 
 ---
 
@@ -237,6 +252,7 @@ humanexodus/
 ├── humanexodus-v01.html
 ├── patterns.html
 ├── followup.html
+├── displacement.html          ← new Session 6
 ├── hag-core/
 │   ├── graph_schema/
 │   │   └── HAG-v0.1-spec.md
@@ -274,5 +290,5 @@ humanexodus/
 
 ---
 
-*Last updated: April 2, 2026 — Session 5*
+*Last updated: April 2, 2026 — Session 6*
 *Built with Claude (Anthropic) + Brian Shen*
